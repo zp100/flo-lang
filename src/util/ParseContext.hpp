@@ -24,7 +24,7 @@ class ParseContext {
     };
 
     ParseState state;
-    std::vector<Value*> value_list;
+    std::vector<Value&> value_list;
     std::string token;
     char next;
 

@@ -11,73 +11,73 @@ MapType getFunctionMap() {
     };
 }
 
-Value* lib_add(ParseContext* const cx) {
-    if (cx->value_list.size() != 2) {
-        return new Error("Invalid argument count for function \"add\"");
-    } else if (cx->value_list[0]->type_id != Value::T_NUM || cx->value_list[1]->type_id != Value::T_NUM) {
-        return new Error("Invalid argument type(s) for function \"add\"");
+const Value& lib_add(ParseContext& cx) {
+    Value* value_ptr;
+    if (cx.value_list.size() != 2) {
+        return *value_ptr = Error("Invalid argument count for function \"add\"");
+    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
+        return *value_ptr = Error("Invalid argument type(s) for function \"add\"");
     }
 
-    Num* const num1 = static_cast<Num*>(cx->value_list[0]);
-    Num* const num2 = static_cast<Num*>(cx->value_list[1]);
-
-    return num1->add(num2);
+    Num num1 = static_cast<Num&>(cx.value_list[0]);
+    Num num2 = static_cast<Num&>(cx.value_list[1]);
+    return num1.add(num2);
 }
 
-Value* lib_sub(ParseContext* const cx) {
-    if (cx->value_list.size() != 2) {
-        return new Error("Invalid argument count for function \"sub\"");
-    } else if (cx->value_list[0]->type_id != Value::T_NUM || cx->value_list[1]->type_id != Value::T_NUM) {
-        return new Error("Invalid argument type(s) for function \"sub\"");
+const Value& lib_sub(ParseContext& cx) {
+    if (cx.value_list.size() != 2) {
+        return Error("Invalid argument count for function \"sub\"");
+    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
+        return Error("Invalid argument type(s) for function \"sub\"");
     }
 
-    Num* const num1 = static_cast<Num*>(cx->value_list[0]);
-    Num* const num2 = static_cast<Num*>(cx->value_list[1]);
+    Num num1 = static_cast<Num&>(cx.value_list[0]);
+    Num num2 = static_cast<Num&>(cx.value_list[1]);
 
-    return num1->sub(num2);
+    return num1.sub(num2);
 }
 
-Value* lib_mul(ParseContext* const cx) {
-    if (cx->value_list.size() != 2) {
-        return new Error("Invalid argument count for function \"mul\"");
-    } else if (cx->value_list[0]->type_id != Value::T_NUM || cx->value_list[1]->type_id != Value::T_NUM) {
-        return new Error("Invalid argument type(s) for function \"mul\"");
+const Value& lib_mul(ParseContext& cx) {
+    if (cx.value_list.size() != 2) {
+        return Error("Invalid argument count for function \"mul\"");
+    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
+        return Error("Invalid argument type(s) for function \"mul\"");
     }
 
-    Num* const num1 = static_cast<Num*>(cx->value_list[0]);
-    Num* const num2 = static_cast<Num*>(cx->value_list[1]);
+    Num num1 = static_cast<Num&>(cx.value_list[0]);
+    Num num2 = static_cast<Num&>(cx.value_list[1]);
 
-    return num1->mul(num2);
+    return num1.mul(num2);
 }
 
-Value* lib_div(ParseContext* const cx) {
-    if (cx->value_list.size() != 2) {
-        return new Error("Invalid argument count for function \"div\"");
-    } else if (cx->value_list[0]->type_id != Value::T_NUM || cx->value_list[1]->type_id != Value::T_NUM) {
-        return new Error("Invalid argument type(s) for function \"div\"");
+const Value& lib_div(ParseContext& cx) {
+    if (cx.value_list.size() != 2) {
+        return Error("Invalid argument count for function \"div\"");
+    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
+        return Error("Invalid argument type(s) for function \"div\"");
     }
 
-    Num* const num1 = static_cast<Num*>(cx->value_list[0]);
-    Num* const num2 = static_cast<Num*>(cx->value_list[1]);
+    Num num1 = static_cast<Num&>(cx.value_list[0]);
+    Num num2 = static_cast<Num&>(cx.value_list[1]);
 
-    if (num2->sign == 0) {
-        return new Error("Division by zero");
+    if (num2.sign == 0) {
+        return Error("Division by zero");
     }
 
-    return num1->div_nonzero(num2);
+    return num1.div_nonzero(num2);
 }
 
-Value* lib_print(ParseContext* const cx) {
-    for (int i = 0; i < cx->value_list.size(); i++) {
-        std::cout << cx->value_list[i]->to_string() << " ";
+const Value& lib_print(ParseContext& cx) {
+    for (int i = 0; i < cx.value_list.size(); i++) {
+        std::cout << cx.value_list[i].to_string() << " ";
     };
 
-    return new Null();
+    return Null();
 }
 
-Value* lib_println(ParseContext* const cx) {
-    Value* value = lib_print(cx);
-    if (value->type_id == Value::T_ERROR) {
+const Value& lib_println(ParseContext& cx) {
+    const Value& value = lib_print(cx);
+    if (value.type_id == Value::T_ERROR) {
         return value;
     }
 

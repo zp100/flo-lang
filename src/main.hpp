@@ -8,16 +8,16 @@
 #include "util/ParseContext.hpp"
 #include "lib.hpp"
 
-void parse(std::ifstream* const source_file);
-void parse_default(ParseContext* const cx);
-void parse_comment(ParseContext* const cx);
-void parse_number_signed(ParseContext* const cx);
-void parse_number(ParseContext* const cx);
-void parse_number_decimals(ParseContext* const cx);
-void parse_number_scientific_start(ParseContext* const cx);
-void parse_number_scientific_signed(ParseContext* const cx);
-void parse_number_scientific(ParseContext* const cx);
-void parse_word(ParseContext* const cx);
-void parse_call_start(ParseContext* const cx);
-void parse_function_name(ParseContext* const cx);
-Value::ValueId call_function(ParseContext* const cx);
+void parse(std::ifstream& source_file);
+void parse_default(ParseContext& cx);
+void parse_comment(ParseContext& cx);
+void parse_number_signed(ParseContext& cx);
+void parse_number(ParseContext& cx);
+void parse_number_decimals(ParseContext& cx);
+void parse_number_scientific_start(ParseContext& cx);
+void parse_number_scientific_signed(ParseContext& cx);
+void parse_number_scientific(ParseContext& cx);
+void parse_word(ParseContext& cx);
+void parse_call_start(ParseContext& cx);
+void parse_function_name(ParseContext& cx);
+Value::ValueId call_function(ParseContext& cx);
