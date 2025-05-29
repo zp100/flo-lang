@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "Value.hpp"
 
 class Error : public Value {
@@ -7,7 +6,6 @@ class Error : public Value {
 
     Error(const std::string);
     std::string to_string() const;
-    Error* copy() const;
 
     private:
 

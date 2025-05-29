@@ -13,6 +13,5 @@ class Value {
     };
 
     ValueId type_id;
-    virtual std::string to_string() const = 0;
-    virtual Value* copy() const = 0;
+    virtual std::string to_string() const = 0; // DEBUG
 };

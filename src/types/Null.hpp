@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "Value.hpp"
 
 class Null : public Value {
@@ -7,6 +6,5 @@ class Null : public Value {
 
     Null();
     std::string to_string() const;
-    Null* copy() const;
 };
 

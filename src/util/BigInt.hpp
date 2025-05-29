@@ -6,7 +6,7 @@
 class BigInt {
     public:
 
-    using Item = uint8_t;
+    using Digit = uint8_t;
 
     enum Comp {
         GREATER = 1,
@@ -14,30 +14,24 @@ class BigInt {
         EQUAL = 0,
     };
 
-    struct Pair {
-        const BigInt* const a;
-        const BigInt* const b;
-    };
-
-    std::vector<Item> bytes;
     int len;
+    bool is_one;
     double as_double;
 
-    BigInt(const Item);
-    BigInt(const std::vector<Item>);
-    BigInt* copy() const;
-    BigInt* set_add(const BigInt* const);
-    BigInt* set_add(const Item);
-    BigInt* set_sub_ordered(const BigInt* const);
-    BigInt* set_sub_ordered(const Item);
-    BigInt* set_mul(const BigInt* const);
-    BigInt* set_mul(const Item);
-    Pair set_div_mod_nonzero(const BigInt* const);
-    Pair set_div_mod_nonzero(const Item);
-    Comp comp(const BigInt* const) const;
-    Comp comp(const Item) const;
+    BigInt(const Digit);
+    Comp comp(const Digit) const;
+    Comp comp(const BigInt&) const;
+    BigInt& dup() const;
+    BigInt& add(const Digit);
+    BigInt& add(const BigInt&);
+    BigInt& sub(const Digit);
+    BigInt& sub(const BigInt&);
+    BigInt& mul(const Digit);
+    BigInt& mul(const BigInt&);
 
     private:
+
+    std::vector<Digit> digits;
 
     void set_properties();
     void set_carry_loop(int, const int);

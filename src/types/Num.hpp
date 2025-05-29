@@ -12,29 +12,21 @@ class Num : public Value {
     public:
 
     const static int SIMPLIFY_MIN_SIZE = 3;
-    const int sign;
     const bool is_int;
+    const int sign;
 
-    static Num* from_string(const std::string);
-    static Num* sum(const std::vector<Num*>* const);
-    static Num* prod(const std::vector<Num*>* const);
     Num();
-    Num(const int, const BigInt::Item, const BigInt::Item);
-    Num(const int, const BigInt* const, const BigInt* const);
+    Num(const int, const BigInt::Digit, const BigInt::Digit);
+    Num(const int, const BigInt&, const BigInt&);
+    static Num from_string(const std::string);
     std::string to_string() const;
-    Num* copy() const;
-    Num* add(const Num* const) const;
-    Num* sub(const Num* const) const;
-    Num* mul(const Num* const) const;
-    Num* div_nonzero(const Num* const) const;
+    const Num& add(const Num&) const;
+    const Num& sub(const Num&) const;
+    const Num& mul(const Num&) const;
+    const Num& div_nonzero(const Num&) const;
 
     private:
 
-    enum SubtractSide {
-        A_SIDE,
-        B_SIDE,
-    };
-
-    const BigInt* const numerator;
-    const BigInt* const denominator;
+    const BigInt numerator;
+    const BigInt denominator;
 };

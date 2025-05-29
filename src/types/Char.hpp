@@ -1,13 +1,11 @@
 #pragma once
-#include <string>
 #include "Value.hpp"
 
 class Char : public Value {
     public:
 
-    Char(const char v);
+    Char(const char c);
     std::string to_string() const;
-    Char* copy() const;
 
     private:
 
