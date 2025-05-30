@@ -5,7 +5,7 @@ Error::Error(const std::string em) : error_message(em) {
 }
 
 Value::Ptr Error::from_string(const std::string str) {
-    return std::make_unique<const Error>(str);
+    return std::make_shared<const Error>(str);
 }
 
 std::string Error::to_string() const {

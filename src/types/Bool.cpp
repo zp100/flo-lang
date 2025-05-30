@@ -6,11 +6,11 @@ Bool::Bool(const bool b) : value(b) {
 
 Value::Ptr Bool::from_string(const std::string str) {
     if (str == "true") {
-        return std::make_unique<const Bool>(true);
+        return std::make_shared<const Bool>(true);
     } else if (str == "false") {
-        return std::make_unique<const Bool>(false);
+        return std::make_shared<const Bool>(false);
     } else {
-        return std::unique_ptr<const Bool>(nullptr);
+        return std::shared_ptr<const Bool>(nullptr);
     }
 }
 

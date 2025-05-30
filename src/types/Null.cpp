@@ -6,9 +6,9 @@ Null::Null() {
 
 Value::Ptr Null::from_string(const std::string str) {
     if (str == "null") {
-        return std::make_unique<const Null>();
+        return std::make_shared<const Null>();
     } else {
-        return std::unique_ptr<const Null>(nullptr);
+        return std::shared_ptr<const Null>(nullptr);
     }
 }
 

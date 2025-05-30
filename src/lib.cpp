@@ -25,7 +25,7 @@ Value::Ptr lib_add(ParseContext& cx) {
     const Num num1 = cast<Num>(cx.value_list[0].get());
     const Num num2 = cast<Num>(cx.value_list[1].get());
 
-    return std::make_unique<const Num>(num1.add(num2));
+    return std::make_shared<const Num>(num1.add(num2));
 }
 
 Value::Ptr lib_sub(ParseContext& cx) {
@@ -38,7 +38,7 @@ Value::Ptr lib_sub(ParseContext& cx) {
     const Num num1 = cast<Num>(cx.value_list[0].get());
     const Num num2 = cast<Num>(cx.value_list[1].get());
 
-    return std::make_unique<const Num>(num1.sub(num2));
+    return std::make_shared<const Num>(num1.sub(num2));
 }
 
 Value::Ptr lib_mul(ParseContext& cx) {
@@ -51,7 +51,7 @@ Value::Ptr lib_mul(ParseContext& cx) {
     const Num num1 = cast<Num>(cx.value_list[0].get());
     const Num num2 = cast<Num>(cx.value_list[1].get());
 
-    return std::make_unique<const Num>(num1.mul(num2));
+    return std::make_shared<const Num>(num1.mul(num2));
 }
 
 Value::Ptr lib_div(ParseContext& cx) {
@@ -69,7 +69,7 @@ Value::Ptr lib_div(ParseContext& cx) {
         return Error::from_string("Division by zero");
     }
     
-    return std::make_unique<const Num>(num1.div_nonzero(num2));
+    return std::make_shared<const Num>(num1.div_nonzero(num2));
 }
 
 Value::Ptr lib_print(ParseContext& cx) {
@@ -77,7 +77,7 @@ Value::Ptr lib_print(ParseContext& cx) {
         std::cout << cx.value_list[i]->to_string() << " ";
     };
 
-    return std::make_unique<const Null>();
+    return std::make_shared<const Null>();
 }
 
 Value::Ptr lib_println(ParseContext& cx) {

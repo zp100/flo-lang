@@ -5,7 +5,7 @@
 class Value {
     public:
 
-    using Ptr = std::unique_ptr<const Value>;
+    using Ptr = std::shared_ptr<const Value>;
 
     enum ValueId {
         T_NULL,

@@ -6,9 +6,9 @@ Char::Char(const char c) : value(c) {
 
 Value::Ptr Char::from_string(const std::string str) {
     if (str.size() == 1) {
-        return std::make_unique<const Char>(str[0]);
+        return std::make_shared<const Char>(str[0]);
     } else {
-        return std::unique_ptr<const Char>(nullptr);
+        return std::shared_ptr<const Char>(nullptr);
     }
 }
 

@@ -33,7 +33,7 @@ Value::Ptr Num::from_string(const std::string str) {
         }
     }
 
-    return std::make_unique<const Num>(new_s, new_n, new_d);
+    return std::make_shared<const Num>(new_s, new_n, new_d);
 }
 
 std::string Num::to_string() const {
