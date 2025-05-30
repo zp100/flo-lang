@@ -1,19 +1,23 @@
 #include "Num.hpp"
 
-Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {
-    type_id = T_NUM;
-}
-
-Num::Num(const int s, const BigInt::Digit n, const BigInt::Digit d) : is_int(d == 1), sign(s), numerator(n), denominator(d) {
-    type_id = T_NUM;
-}
-
 Num::Num(const int s, const BigInt& n, const BigInt& d) : is_int(d.is_one), sign(s), numerator(n), denominator(d) {
     type_id = T_NUM;
 }
 
+Num::Ptr Num::make() {
+    return std::make_unique<const Num>(0, BigInt(0), BigInt(1));
+}
+
+Num::Ptr Num::make(const int s, const BigInt::Digit n, const BigInt::Digit d) {
+    return std::make_unique<const Num>(s, BigInt(n), BigInt(d));
+}
+
+Num::Ptr Num::make(const int s, const BigInt& n, const BigInt& d) {
+    return std::make_unique<const Num>(s, n, d);
+}
+
 // TODO: For now, this function assumes that the given string represents a valid number.
-Num Num::from_string(const std::string str) {
+Num::Ptr Num::from_string(const std::string str) {
     int new_s = 1;
     BigInt new_n (0);
     BigInt new_d (1);
@@ -33,7 +37,7 @@ Num Num::from_string(const std::string str) {
         }
     }
 
-    return Num(new_s, new_n, new_d);
+    return make(new_s, new_n, new_d);
 }
 
 std::string Num::to_string() const {
@@ -50,23 +54,25 @@ std::string Num::to_string() const {
     return stream.str();
 }
 
-const Num& Num::add(const Num& rhs) const {
+Num::Ptr Num::add(const Ptr rhs) const {
     // If either number is zero, return the other number.
     // ex: (+8) + (0) == (+8), or (0) + (-8) == (-8)
-    if (rhs.sign == 0) {
-        return *this;
+    if (rhs->sign == 0) {
+        return make(sign, numerator, denominator);
     } else if (sign == 0) {
-        return rhs;
+        return make(rhs->sign, rhs->numerator, rhs->denominator);
     }
 
-    BigInt this_n_scaled = numerator.dup().mul(rhs.denominator);
-    BigInt other_n_scaled = denominator.dup().mul(rhs.numerator);
+    auto x = new BigInt(3);
+
+    BigInt this_n_scaled = numerator.dup().mul(rhs->denominator);
+    BigInt other_n_scaled = denominator.dup().mul(rhs->numerator);
     const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
-        if (sign == rhs.sign) {
+        if (sign == rhs->sign) {
             // Equal magnitues and same signs: Double.
             // ex: (+6) + (+6) == (+12), or (-6) + (-6) == (-12)
-            return Num(
+            return make(
                 sign,
                 numerator.dup().mul(2),
                 denominator
@@ -74,39 +80,39 @@ const Num& Num::add(const Num& rhs) const {
         } else {
             // Equal magnitudes but opposite signs: Zero.
             // ex: (+6) + (-6) == (0), or (-6) + (+6) == (0)
-            return Num();
+            return make();
         }
     }
 
-    BigInt d_scaled = denominator.dup().mul(rhs.denominator);
-    if (sign == 1 && rhs.sign == -1 && comp_sign == BigInt::GREATER) {
+    BigInt d_scaled = denominator.dup().mul(rhs->denominator);
+    if (sign == 1 && rhs->sign == -1 && comp_sign == BigInt::GREATER) {
         // Subtract.
         // ex: (+7) + (-5) == (+2)
-        return Num(
+        return make(
             1,
             this_n_scaled.sub(other_n_scaled),
             d_scaled
         );
-    } else if (sign == 1 && rhs.sign == -1 && comp_sign == BigInt::LESS) {
+    } else if (sign == 1 && rhs->sign == -1 && comp_sign == BigInt::LESS) {
         // Subtract reversed, then negate the result.
         // ex: (+5) + (-7) == (-2)
-        return Num(
+        return make(
             -1,
             other_n_scaled.sub(this_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == 1 && comp_sign == BigInt::GREATER) {
+    } else if (sign == -1 && rhs->sign == 1 && comp_sign == BigInt::GREATER) {
         // Subtract, then negate the result.
         // ex: (-7) + (+5) == (-2)
-        return Num(
+        return make(
             -1,
             this_n_scaled.sub(other_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == 1 && comp_sign == BigInt::LESS) {
+    } else if (sign == -1 && rhs->sign == 1 && comp_sign == BigInt::LESS) {
         // Subtract reversed.
         // ex: (-5) + (+7) == (+2)
-        return Num(
+        return make(
             1,
             other_n_scaled.sub(this_n_scaled),
             d_scaled
@@ -115,7 +121,7 @@ const Num& Num::add(const Num& rhs) const {
         // Add.
         // ex: (+7) + (+5) == (+12), or (-7) + (-5) == (-12)
         // ex: (+5) + (+7) == (+12), or (-5) + (-7) == (-12)
-        return Num(
+        return make(
             sign,
             this_n_scaled.add(other_n_scaled),
             d_scaled
@@ -123,25 +129,25 @@ const Num& Num::add(const Num& rhs) const {
     }
 }
 
-const Num& Num::sub(const Num& rhs) const {
+Num::Ptr Num::sub(const Ptr rhs) const {
     // If the subtrahend is zero, return this.
     // ex: (+8) - (0) == (+8), or (-8) - (0) == (-8)
-    if (rhs.sign == 0) {
-        return *this;
+    if (rhs->sign == 0) {
+        return make(sign, numerator, denominator);
     }
 
-    BigInt& this_n_scaled = numerator.dup().mul(rhs.denominator);
-    BigInt& other_n_scaled = denominator.dup().mul(rhs.numerator);
+    BigInt& this_n_scaled = numerator.dup().mul(rhs->denominator);
+    BigInt& other_n_scaled = denominator.dup().mul(rhs->numerator);
     const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
-        if (sign == rhs.sign) {
+        if (sign == rhs->sign) {
             // Equal magnitues and same signs: Zero.
             // ex: (+6) - (+6) == (0), or (-6) - (-6) == (0)
-            return Num();
+            return make();
         } else {
             // Equal magnitudes but opposite signs: Double.
             // ex: (+6) - (-6) == (+12), or (-6) - (+6) == (-12)
-            return Num(
+            return make(
                 sign,
                 numerator.dup().mul(2),
                 denominator
@@ -149,35 +155,35 @@ const Num& Num::sub(const Num& rhs) const {
         }
     }
 
-    BigInt d_scaled = denominator.dup().mul(rhs.denominator);
-    if (sign == 1 && rhs.sign == 1 && comp_sign == BigInt::GREATER) {
+    BigInt d_scaled = denominator.dup().mul(rhs->denominator);
+    if (sign == 1 && rhs->sign == 1 && comp_sign == BigInt::GREATER) {
         // Subtract.
         // ex: (+7) - (+5) == (+2)
-        return Num(
+        return make(
             1,
             this_n_scaled.sub(other_n_scaled),
             d_scaled
         );
-    } else if (sign == 1 && rhs.sign == 1 && comp_sign == BigInt::LESS) {
+    } else if (sign == 1 && rhs->sign == 1 && comp_sign == BigInt::LESS) {
         // Subtract reversed, then negate the result.
         // ex: (+5) - (+7) == (-2)
-        return Num(
+        return make(
             -1,
             other_n_scaled.sub(this_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == -1 && comp_sign == BigInt::GREATER) {
+    } else if (sign == -1 && rhs->sign == -1 && comp_sign == BigInt::GREATER) {
         // Subtract, then negate the result.
         // ex: (-7) - (-5) == (-2)
-        return Num(
+        return make(
             -1,
             this_n_scaled.sub(other_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == -1 && comp_sign == BigInt::LESS) {
+    } else if (sign == -1 && rhs->sign == -1 && comp_sign == BigInt::LESS) {
         // Subtract reversed.
         // ex: (-5) - (-7) == (+2)
-        return Num(
+        return make(
             1,
             other_n_scaled.sub(this_n_scaled),
             d_scaled
@@ -186,7 +192,7 @@ const Num& Num::sub(const Num& rhs) const {
         // Add.
         // ex: (+7) - (-5) == (+12), or (-7) - (+5) == (-12)
         // ex: (+5) - (-7) == (+12), or (-5) - (+7) == (-12)
-        return Num(
+        return make(
             sign,
             this_n_scaled.add(other_n_scaled),
             d_scaled
@@ -194,30 +200,30 @@ const Num& Num::sub(const Num& rhs) const {
     }
 }
 
-const Num& Num::mul(const Num& rhs) const {
+Num::Ptr Num::mul(const Ptr rhs) const {
     // If either number is zero, return zero.
-    if (sign == 0 || rhs.sign == 0) {
-        return Num();
+    if (sign == 0 || rhs->sign == 0) {
+        return make();
     }
 
     // Multiply.
-    return Num(
-        sign * rhs.sign,
-        numerator.dup().mul(rhs.numerator),
-        denominator.dup().mul(rhs.denominator)
+    return make(
+        sign * rhs->sign,
+        numerator.dup().mul(rhs->numerator),
+        denominator.dup().mul(rhs->denominator)
     );
 }
 
-const Num& Num::div_nonzero(const Num& rhs) const {
+Num::Ptr Num::div_nonzero(const Ptr rhs) const {
     // If the dividend is zero, return zero.
     if (sign == 0) {
-        return Num();
+        return make();
     }
 
     // Multiply reciprocals.
-    return Num(
-        sign * rhs.sign,
-        numerator.dup().mul(rhs.denominator),
-        denominator.dup().mul(rhs.numerator)
+    return make(
+        sign * rhs->sign,
+        numerator.dup().mul(rhs->denominator),
+        denominator.dup().mul(rhs->numerator)
     );
 }
