@@ -45,7 +45,8 @@ BigInt& BigInt::add(const Digit d) {
 BigInt& BigInt::add(const BigInt& rhs) {
     int max_len = (len > rhs.len ? len : rhs.len);
     for (int i = max_len - 1; i >= 0; i--) {
-        int result = (i < len ? digits[i] : 0) + (i < rhs.len ? rhs.digits[i] : 0);
+        Result result = (i < len ? Result(digits[i]) : 0)
+            + (i < rhs.len ? Result(rhs.digits[i]) : 0);
         set_carry_loop(result, i);
     };
 
@@ -59,8 +60,8 @@ BigInt& BigInt::sub(const Digit d) {
 
 BigInt& BigInt::sub(const BigInt& rhs) {
     for (int i = len - 1; i >= 0; i--) {
-        int result = digits[i] - (i < rhs.len ? rhs.digits[i] : 0);
-        set_carry_loop(result, i);
+        ResultSigned result = ResultSigned(digits[i]) - (i < rhs.len ? ResultSigned(rhs.digits[i]) : 0);
+        set_carry_loop_signed(result, i);
     };
 
     set_properties();
@@ -74,10 +75,34 @@ BigInt& BigInt::mul(const Digit d) {
 BigInt& BigInt::mul(const BigInt& rhs) {
     for (int i = len - 1; i >= 0; i--) {
         for (int j = rhs.len - 1; j >= 0; j--) {
-            int result = digits[i] * rhs.digits[j];
+            Result result = Result(digits[i]) * Result(rhs.digits[j]);
             set_carry_loop(result, i + j);
         };
     };
+
+    set_properties();
+    return *this;
+}
+
+BigInt& BigInt::div(const Digit d) {
+    Digit remainder = 0;
+    for (int i = len - 1; i >= 0; i--) {
+        Result result = (Result(digits[i]) + remainder) / d;
+        remainder = (Result(digits[i]) + remainder) % d;
+        set_carry_loop(result, i);
+    }
+
+    set_properties();
+    return *this;
+}
+
+BigInt& BigInt::mod(const Digit d) {
+    Digit remainder = 0;
+    for (int i = len - 1; i >= 0; i--) {
+        remainder = (Result(digits[i]) + remainder) % d;
+    }
+    digits.resize(1);
+    digits[0] = remainder;
 
     set_properties();
     return *this;
@@ -94,7 +119,10 @@ void BigInt::set_properties() {
     as_double = d;
 }
 
-void BigInt::set_carry_loop(int carry, const int start_digit) {
+void BigInt::set_carry_loop(Result carry, const int start_digit) {
+    // Clear the start digit.
+    digits[start_digit] = 0;
+
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
     for (int d = start_digit; carry != 0; d++) {
         // Ensure that there's an item for the current index.
@@ -103,13 +131,36 @@ void BigInt::set_carry_loop(int carry, const int start_digit) {
         }
 
         // Get the new value for this item.
-        int value = digits[d] + carry;
-        int value_trunc = (value + 256) % 256;
+        Result value = digits[d] + carry;
+        Digit value_trunc = value % BigInt::DIGIT_SIZE_FACTOR;
 
         // Set this item to the new value (truncated to one byte).
         digits[d] = value_trunc;
 
         // Update the carryover.
-        carry = (value / 256 + (value < 0 && value_trunc > 0 ? -1 : 0));
+        carry = value / BigInt::DIGIT_SIZE_FACTOR;
+    };
+}
+
+void BigInt::set_carry_loop_signed(ResultSigned carry, const int start_digit) {
+    // Clear the start digit.
+    digits[start_digit] = 0;
+
+    // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
+    for (int d = start_digit; carry != 0; d++) {
+        // Ensure that there's an item for the current index.
+        if (d >= digits.size()) {
+            digits.resize(d + 1, 0);
+        }
+
+        // Get the new value for this item.
+        ResultSigned value = digits[d] + carry;
+        Digit value_trunc = (value + BigInt::DIGIT_SIZE_FACTOR) % BigInt::DIGIT_SIZE_FACTOR;
+
+        // Set this item to the new value (truncated to one byte).
+        digits[d] = value_trunc;
+
+        // Update the carryover, using floor division instead of int division.
+        carry = (value + BigInt::DIGIT_SIZE_FACTOR) / BigInt::DIGIT_SIZE_FACTOR - 1;
     };
 }
