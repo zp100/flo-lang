@@ -5,6 +5,7 @@ class Null : public Value {
     public:
 
     Null();
-    std::string to_string() const;
+    static Ptr from_string(const std::string);
+    std::string to_string() const override;
 };
 

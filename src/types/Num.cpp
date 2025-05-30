@@ -13,7 +13,7 @@ Num::Num(const int s, const BigInt& n, const BigInt& d) : is_int(d.is_one), sign
 }
 
 // TODO: For now, this function assumes that the given string represents a valid number.
-Num Num::from_string(const std::string str) {
+Value::Ptr Num::from_string(const std::string str) {
     int new_s = 1;
     BigInt new_n (0);
     BigInt new_d (1);
@@ -33,7 +33,7 @@ Num Num::from_string(const std::string str) {
         }
     }
 
-    return Num(new_s, new_n, new_d);
+    return std::make_unique<const Num>(new_s, new_n, new_d);
 }
 
 std::string Num::to_string() const {

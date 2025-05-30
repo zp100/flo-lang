@@ -5,7 +5,8 @@ class Error : public Value {
     public:
 
     Error(const std::string);
-    std::string to_string() const;
+    static Ptr from_string(const std::string);
+    std::string to_string() const override;
 
     private:
 

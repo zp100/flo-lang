@@ -1,7 +1,6 @@
 #pragma once
 #include <cstdint>
 #include <iomanip>
-#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -11,8 +10,6 @@
 class Num : public Value {
     public:
 
-    using Ptr = std::unique_ptr<const Num>;
-
     const static int SIMPLIFY_MIN_SIZE = 3;
     const bool is_int;
     const int sign;
@@ -20,8 +17,8 @@ class Num : public Value {
     Num();
     Num(const int, const BigInt::Digit, const BigInt::Digit);
     Num(const int, const BigInt&, const BigInt&);
-    static Num from_string(const std::string);
-    std::string to_string() const;
+    static Ptr from_string(const std::string);
+    std::string to_string() const override;
     Num add(const Num) const;
     Num sub(const Num) const;
     Num mul(const Num) const;
