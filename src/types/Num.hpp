@@ -17,16 +17,15 @@ class Num : public Value {
     const bool is_int;
     const int sign;
 
+    Num();
+    Num(const int, const BigInt::Digit, const BigInt::Digit);
     Num(const int, const BigInt&, const BigInt&);
-    static Ptr make();
-    static Ptr make(const int, const BigInt::Digit, const BigInt::Digit);
-    static Ptr make(const int, const BigInt&, const BigInt&);
-    static Ptr from_string(const std::string);
+    static Num from_string(const std::string);
     std::string to_string() const;
-    Ptr add(const Ptr) const;
-    Ptr sub(const Ptr) const;
-    Ptr mul(const Ptr) const;
-    Ptr div_nonzero(const Ptr) const;
+    Num add(const Num) const;
+    Num sub(const Num) const;
+    Num mul(const Num) const;
+    Num div_nonzero(const Num) const;
 
     private:
 
