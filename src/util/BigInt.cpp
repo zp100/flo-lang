@@ -124,17 +124,17 @@ void BigInt::set_carry_loop(Result carry, const int start_digit) {
     digits[start_digit] = 0;
 
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
-    for (int d = start_digit; carry != 0; d++) {
-        // Ensure that there's an item for the current index.
+    for (int d = start_digit; carry > 0; d++) {
+        // Ensure that there's a digit for the current index.
         if (d >= digits.size()) {
             digits.resize(d + 1, 0);
         }
 
-        // Get the new value for this item.
+        // Get the new value for this digit.
         Result value = digits[d] + carry;
         Digit value_trunc = value % BigInt::DIGIT_SIZE_FACTOR;
 
-        // Set this item to the new value (truncated to one byte).
+        // Set this digit to the new value (truncated to one byte).
         digits[d] = value_trunc;
 
         // Update the carryover.
@@ -148,16 +148,16 @@ void BigInt::set_carry_loop_signed(ResultSigned carry, const int start_digit) {
 
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
     for (int d = start_digit; carry != 0; d++) {
-        // Ensure that there's an item for the current index.
+        // Ensure that there's a digit for the current index.
         if (d >= digits.size()) {
             digits.resize(d + 1, 0);
         }
 
-        // Get the new value for this item.
+        // Get the new value for this digit.
         ResultSigned value = digits[d] + carry;
         Digit value_trunc = (value + BigInt::DIGIT_SIZE_FACTOR) % BigInt::DIGIT_SIZE_FACTOR;
 
-        // Set this item to the new value (truncated to one byte).
+        // Set this digit to the new value (truncated to one byte).
         digits[d] = value_trunc;
 
         // Update the carryover, using floor division instead of int division.
