@@ -25,7 +25,7 @@ Value::Ptr Num::from_string(const std::string str) {
         } else if (str[i] == '.') {
             in_decimals = true;
         } else if (str[i] >= '0' && str[i] <= '9') {
-            int digit = str[i] - '0';
+            BigInt::Digit digit = str[i] - '0';
             new_n.mul(10).add(digit);
             if (in_decimals) {
                 new_d.mul(10);

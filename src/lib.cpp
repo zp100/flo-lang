@@ -64,11 +64,10 @@ Value::Ptr lib_div(ParseContext& cx) {
     const Num num1 = cast<Num>(cx.value_list[0].get());
     const Num num2 = cast<Num>(cx.value_list[1].get());
 
-    
     if (num2.sign == 0) {
         return Error::from_string("Division by zero");
     }
-    
+
     return std::make_shared<const Num>(num1.div_nonzero(num2));
 }
 

@@ -22,7 +22,7 @@ BigInt::Comp BigInt::comp(const BigInt& rhs) const {
     }
 
     for (int i = len - 1; i >= 0; i--) {
-        int result = digits[i] - rhs.digits[i];
+        Digit result = digits[i] - rhs.digits[i];
         if (result > 0) {
             return GREATER;
         } else if (result < 0) {
