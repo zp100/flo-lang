@@ -74,7 +74,7 @@ void parse(std::ifstream& source_file) {
 
     std::cout << "---" << std::endl;
     for (int i = cx.value_list.size() - 1; i >= 0; i--) {
-        std::cout << "[" << i << "] " << cx.value_list[i].to_string() << std::endl;
+        std::cout << "[" << i << "] " << cx.value_list[i]->to_string() << std::endl;
     };
 }
 
@@ -152,7 +152,7 @@ void parse_number(ParseContext& cx) {
         cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
     } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
         // End number.
-        Num value = Num::from_string(cx.token);
+        Value::Ptr value = Num::from_string(cx.token);
         cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
@@ -172,7 +172,7 @@ void parse_number_decimals(ParseContext& cx) {
         cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
     } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
         // End number.
-        Num value = Num::from_string(cx.token);
+        Value::Ptr value = Num::from_string(cx.token);
         cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
@@ -214,7 +214,7 @@ void parse_number_scientific(ParseContext& cx) {
         cx.token.push_back(cx.next);
     } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
         // End number.
-        Num value = Num::from_string(cx.token);
+        Value::Ptr value = Num::from_string(cx.token);
         cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
@@ -290,16 +290,16 @@ void parse_function_name(ParseContext& cx) {
 Value::ValueId call_function(ParseContext& cx) {
     MapType function_map = getFunctionMap();
 
-    Value* value_ptr;
+    Value::Ptr value;
     if (function_map.count(cx.token) > 0) {
         FunctionType _callee_ = function_map[cx.token];
-        *value_ptr = _callee_(cx);
+        value = _callee_(cx);
     } else {
-        *value_ptr = Error("Invalid function \"" + cx.token + "\" called");
+        value = Error::from_string("Invalid function \"" + cx.token + "\" called");
     }
 
     cx.value_list.clear();
-    cx.value_list.push_back(*value_ptr);
+    cx.value_list.push_back(value);
     cx.token.clear();
-    return value_ptr->type_id;
+    return value->type_id;
 }

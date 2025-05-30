@@ -11,73 +11,78 @@ MapType getFunctionMap() {
     };
 }
 
-const Value& lib_add(ParseContext& cx) {
-    Value* value_ptr;
-    if (cx.value_list.size() != 2) {
-        return *value_ptr = Error("Invalid argument count for function \"add\"");
-    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
-        return *value_ptr = Error("Invalid argument type(s) for function \"add\"");
-    }
-
-    Num num1 = static_cast<Num&>(cx.value_list[0]);
-    Num num2 = static_cast<Num&>(cx.value_list[1]);
-    return num1.add(num2);
+template <typename T> T cast(const Value* raw_value) {
+    return *dynamic_cast<const T* const>(value);
 }
 
-const Value& lib_sub(ParseContext& cx) {
+Value::Ptr lib_add(ParseContext& cx) {
     if (cx.value_list.size() != 2) {
-        return Error("Invalid argument count for function \"sub\"");
-    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
-        return Error("Invalid argument type(s) for function \"sub\"");
+        return Error::from_string("Invalid argument count for function \"add\"");
+    } else if (cx.value_list[0]->type_id != Value::T_NUM || cx.value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"add\"");
     }
 
-    Num num1 = static_cast<Num&>(cx.value_list[0]);
-    Num num2 = static_cast<Num&>(cx.value_list[1]);
+    const Num num1 = cast<Num>(cx.value_list[0].get());
+    const Num num2 = cast<Num>(cx.value_list[1].get());
 
-    return num1.sub(num2);
+    return std::make_unique<const Num>(num1.add(num2));
 }
 
-const Value& lib_mul(ParseContext& cx) {
+Value::Ptr lib_sub(ParseContext& cx) {
     if (cx.value_list.size() != 2) {
-        return Error("Invalid argument count for function \"mul\"");
-    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
-        return Error("Invalid argument type(s) for function \"mul\"");
+        return Error::from_string("Invalid argument count for function \"sub\"");
+    } else if (cx.value_list[0]->type_id != Value::T_NUM || cx.value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"sub\"");
     }
 
-    Num num1 = static_cast<Num&>(cx.value_list[0]);
-    Num num2 = static_cast<Num&>(cx.value_list[1]);
+    const Num num1 = cast<Num>(cx.value_list[0].get());
+    const Num num2 = cast<Num>(cx.value_list[1].get());
 
-    return num1.mul(num2);
+    return std::make_unique<const Num>(num1.sub(num2));
 }
 
-const Value& lib_div(ParseContext& cx) {
+Value::Ptr lib_mul(ParseContext& cx) {
     if (cx.value_list.size() != 2) {
-        return Error("Invalid argument count for function \"div\"");
-    } else if (cx.value_list[0].type_id != Value::T_NUM || cx.value_list[1].type_id != Value::T_NUM) {
-        return Error("Invalid argument type(s) for function \"div\"");
+        return Error::from_string("Invalid argument count for function \"mul\"");
+    } else if (cx.value_list[0]->type_id != Value::T_NUM || cx.value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"mul\"");
     }
 
-    Num num1 = static_cast<Num&>(cx.value_list[0]);
-    Num num2 = static_cast<Num&>(cx.value_list[1]);
+    const Num num1 = cast<Num>(cx.value_list[0].get());
+    const Num num2 = cast<Num>(cx.value_list[1].get());
 
+    return std::make_unique<const Num>(num1.mul(num2));
+}
+
+Value::Ptr lib_div(ParseContext& cx) {
+    if (cx.value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"div\"");
+    } else if (cx.value_list[0]->type_id != Value::T_NUM || cx.value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"div\"");
+    }
+
+    const Num num1 = cast<Num>(cx.value_list[0].get());
+    const Num num2 = cast<Num>(cx.value_list[1].get());
+
+    
     if (num2.sign == 0) {
-        return Error("Division by zero");
+        return Error::from_string("Division by zero");
     }
-
-    return num1.div_nonzero(num2);
+    
+    return std::make_unique<const Num>(num1.div_nonzero(num2));
 }
 
-const Value& lib_print(ParseContext& cx) {
+Value::Ptr lib_print(ParseContext& cx) {
     for (int i = 0; i < cx.value_list.size(); i++) {
-        std::cout << cx.value_list[i].to_string() << " ";
+        std::cout << cx.value_list[i]->to_string() << " ";
     };
 
-    return Null();
+    return std::make_unique<const Null>();
 }
 
-const Value& lib_println(ParseContext& cx) {
-    const Value& value = lib_print(cx);
-    if (value.type_id == Value::T_ERROR) {
+Value::Ptr lib_println(ParseContext& cx) {
+    Value::Ptr value = lib_print(cx);
+    if (value->type_id == Value::T_ERROR) {
         return value;
     }
 
