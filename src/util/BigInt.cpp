@@ -33,11 +33,6 @@ BigInt::Comp BigInt::comp(const BigInt& rhs) const {
     return EQUAL;
 }
 
-BigInt& BigInt::dup() const {
-    BigInt res (*this);
-    return res;
-}
-
 BigInt& BigInt::add(const Digit d) {
     return add(BigInt(d));
 }

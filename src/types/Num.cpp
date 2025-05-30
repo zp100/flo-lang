@@ -61,8 +61,8 @@ Num Num::add(const Num rhs) const {
 
     auto x = new BigInt(3);
 
-    BigInt this_n_scaled = numerator.dup().mul(rhs.denominator);
-    BigInt other_n_scaled = denominator.dup().mul(rhs.numerator);
+    BigInt this_n_scaled = BigInt(numerator).mul(rhs.denominator);
+    BigInt other_n_scaled = BigInt(denominator).mul(rhs.numerator);
     const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
         if (sign == rhs.sign) {
@@ -70,7 +70,7 @@ Num Num::add(const Num rhs) const {
             // ex: (+6) + (+6) == (+12), or (-6) + (-6) == (-12)
             return Num(
                 sign,
-                numerator.dup().mul(2),
+                BigInt(numerator).mul(2),
                 denominator
             );
         } else {
@@ -80,7 +80,7 @@ Num Num::add(const Num rhs) const {
         }
     }
 
-    BigInt d_scaled = denominator.dup().mul(rhs.denominator);
+    BigInt d_scaled = BigInt(denominator).mul(rhs.denominator);
     if (sign == 1 && rhs.sign == -1 && comp_sign == BigInt::GREATER) {
         // Subtract.
         // ex: (+7) + (-5) == (+2)
@@ -132,8 +132,8 @@ Num Num::sub(const Num rhs) const {
         return *this;
     }
 
-    BigInt& this_n_scaled = numerator.dup().mul(rhs.denominator);
-    BigInt& other_n_scaled = denominator.dup().mul(rhs.numerator);
+    BigInt& this_n_scaled = BigInt(numerator).mul(rhs.denominator);
+    BigInt& other_n_scaled = BigInt(denominator).mul(rhs.numerator);
     const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
         if (sign == rhs.sign) {
@@ -145,13 +145,13 @@ Num Num::sub(const Num rhs) const {
             // ex: (+6) - (-6) == (+12), or (-6) - (+6) == (-12)
             return Num(
                 sign,
-                numerator.dup().mul(2),
+                BigInt(numerator).mul(2),
                 denominator
             );
         }
     }
 
-    BigInt d_scaled = denominator.dup().mul(rhs.denominator);
+    BigInt d_scaled = BigInt(denominator).mul(rhs.denominator);
     if (sign == 1 && rhs.sign == 1 && comp_sign == BigInt::GREATER) {
         // Subtract.
         // ex: (+7) - (+5) == (+2)
@@ -205,8 +205,8 @@ Num Num::mul(const Num rhs) const {
     // Multiply.
     return Num(
         sign * rhs.sign,
-        numerator.dup().mul(rhs.numerator),
-        denominator.dup().mul(rhs.denominator)
+        BigInt(numerator).mul(rhs.numerator),
+        BigInt(denominator).mul(rhs.denominator)
     );
 }
 
@@ -219,7 +219,7 @@ Num Num::div_nonzero(const Num rhs) const {
     // Multiply reciprocals.
     return Num(
         sign * rhs.sign,
-        numerator.dup().mul(rhs.denominator),
-        denominator.dup().mul(rhs.numerator)
+        BigInt(numerator).mul(rhs.denominator),
+        BigInt(denominator).mul(rhs.numerator)
     );
 }

@@ -24,7 +24,6 @@ class BigInt {
     BigInt(const Digit);
     Comp comp(const Digit) const;
     Comp comp(const BigInt&) const;
-    BigInt& dup() const;
     BigInt& add(const Digit);
     BigInt& add(const BigInt&);
     BigInt& sub(const Digit);
