@@ -13,7 +13,7 @@ using FunctionType = std::function<Value::Ptr(ParseContext&)>;
 using MapType = std::map<std::string, FunctionType>;
 
 std::map<std::string, FunctionType> getFunctionMap();
-template <typename T> T cast(const Value::Ptr value);
+template <typename T> T cast(const Value*);
 
 // TYPE UNARY
 Value::Ptr lib_Bool(ParseContext&);

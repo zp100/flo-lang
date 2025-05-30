@@ -16,7 +16,7 @@ class BigInt {
         EQUAL = 0,
     };
 
-    static const int DIGIT_SIZE_FACTOR = UINT32_MAX + 1;
+    static const Result DIGIT_SIZE_FACTOR = Result(UINT32_MAX) + 1;
     int len;
     bool is_one;
     double as_double;

@@ -59,8 +59,6 @@ Num Num::add(const Num rhs) const {
         return rhs;
     }
 
-    auto x = new BigInt(3);
-
     BigInt this_n_scaled = BigInt(numerator).mul(rhs.denominator);
     BigInt other_n_scaled = BigInt(denominator).mul(rhs.numerator);
     const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);

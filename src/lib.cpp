@@ -12,7 +12,7 @@ MapType getFunctionMap() {
 }
 
 template <typename T> T cast(const Value* raw_value) {
-    return *dynamic_cast<const T* const>(value);
+    return *dynamic_cast<const T* const>(raw_value);
 }
 
 Value::Ptr lib_add(ParseContext& cx) {
