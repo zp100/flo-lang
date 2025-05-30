@@ -132,13 +132,13 @@ void BigInt::set_carry_loop(Result carry, const int start_digit) {
 
         // Get the new value for this digit.
         Result value = digits[d] + carry;
-        Digit value_trunc = value % BigInt::DIGIT_SIZE_FACTOR;
+        Digit value_trunc = value % DIGIT_SIZE_FACTOR;
 
         // Set this digit to the new value (truncated to one byte).
         digits[d] = value_trunc;
 
         // Update the carryover.
-        carry = value / BigInt::DIGIT_SIZE_FACTOR;
+        carry = value / DIGIT_SIZE_FACTOR;
     };
 }
 
@@ -155,12 +155,12 @@ void BigInt::set_carry_loop_signed(ResultSigned carry, const int start_digit) {
 
         // Get the new value for this digit.
         ResultSigned value = digits[d] + carry;
-        Digit value_trunc = (value + BigInt::DIGIT_SIZE_FACTOR) % BigInt::DIGIT_SIZE_FACTOR;
+        Digit value_trunc = (value + DIGIT_SIZE_FACTOR) % DIGIT_SIZE_FACTOR;
 
         // Set this digit to the new value (truncated to one byte).
         digits[d] = value_trunc;
 
         // Update the carryover, using floor division instead of int division.
-        carry = (value + BigInt::DIGIT_SIZE_FACTOR) / BigInt::DIGIT_SIZE_FACTOR - 1;
+        carry = (value + DIGIT_SIZE_FACTOR) / DIGIT_SIZE_FACTOR - 1;
     };
 }
