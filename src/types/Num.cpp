@@ -130,8 +130,8 @@ Num Num::sub(const Num rhs) const {
         return *this;
     }
 
-    BigInt& this_n_scaled = BigInt(numerator).mul(rhs.denominator);
-    BigInt& other_n_scaled = BigInt(denominator).mul(rhs.numerator);
+    BigInt this_n_scaled = BigInt(numerator).mul(rhs.denominator);
+    BigInt other_n_scaled = BigInt(denominator).mul(rhs.numerator);
     const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
         if (sign == rhs.sign) {
