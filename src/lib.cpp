@@ -11,8 +11,8 @@ MapType getFunctionMap() {
     };
 }
 
-template <typename T> T cast(const Value* raw_value) {
-    return *dynamic_cast<const T* const>(raw_value);
+template <typename T> T cast(Value::Ptr value) {
+    return *dynamic_cast<const T* const>(value.get());
 }
 
 Value::Ptr lib_add(ParseContext& cx) {
@@ -22,8 +22,8 @@ Value::Ptr lib_add(ParseContext& cx) {
         return Error::from_string("Invalid argument type(s) for function \"add\"");
     }
 
-    const Num num1 = cast<Num>(cx.value_list[0].get());
-    const Num num2 = cast<Num>(cx.value_list[1].get());
+    const Num num1 = cast<Num>(cx.value_list[0]);
+    const Num num2 = cast<Num>(cx.value_list[1]);
 
     return std::make_shared<const Num>(num1.add(num2));
 }
@@ -35,8 +35,8 @@ Value::Ptr lib_sub(ParseContext& cx) {
         return Error::from_string("Invalid argument type(s) for function \"sub\"");
     }
 
-    const Num num1 = cast<Num>(cx.value_list[0].get());
-    const Num num2 = cast<Num>(cx.value_list[1].get());
+    const Num num1 = cast<Num>(cx.value_list[0]);
+    const Num num2 = cast<Num>(cx.value_list[1]);
 
     return std::make_shared<const Num>(num1.sub(num2));
 }
@@ -48,8 +48,8 @@ Value::Ptr lib_mul(ParseContext& cx) {
         return Error::from_string("Invalid argument type(s) for function \"mul\"");
     }
 
-    const Num num1 = cast<Num>(cx.value_list[0].get());
-    const Num num2 = cast<Num>(cx.value_list[1].get());
+    const Num num1 = cast<Num>(cx.value_list[0]);
+    const Num num2 = cast<Num>(cx.value_list[1]);
 
     return std::make_shared<const Num>(num1.mul(num2));
 }
@@ -61,8 +61,8 @@ Value::Ptr lib_div(ParseContext& cx) {
         return Error::from_string("Invalid argument type(s) for function \"div\"");
     }
 
-    const Num num1 = cast<Num>(cx.value_list[0].get());
-    const Num num2 = cast<Num>(cx.value_list[1].get());
+    const Num num1 = cast<Num>(cx.value_list[0]);
+    const Num num2 = cast<Num>(cx.value_list[1]);
 
     if (num2.sign == 0) {
         return Error::from_string("Division by zero");
