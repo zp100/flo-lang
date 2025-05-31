@@ -15,15 +15,15 @@ BigInt::Comp BigInt::comp(const BigInt::Digit d) const {
     }
 }
 
-BigInt::Comp BigInt::comp(const BigInt& rhs) const {
-    if (len > rhs.len) {
+BigInt::Comp BigInt::comp(const BigInt& right) const {
+    if (len > right.len) {
         return GREATER;
-    } else if (len < rhs.len) {
+    } else if (len < right.len) {
         return LESS;
     }
 
     for (int i = len - 1; i >= 0; i--) {
-        ResultSigned result = ResultSigned(digits[i]) - ResultSigned(rhs.digits[i]);
+        ResultSigned result = ResultSigned(digits[i]) - ResultSigned(right.digits[i]);
         if (result > 0) {
             return GREATER;
         } else if (result < 0) {
@@ -38,11 +38,11 @@ BigInt& BigInt::add(const Digit d) {
     return add(BigInt(d));
 }
 
-BigInt& BigInt::add(const BigInt& rhs) {
-    int max_len = (len > rhs.len ? len : rhs.len);
+BigInt& BigInt::add(const BigInt& right) {
+    int max_len = (len > right.len ? len : right.len);
     for (int i = max_len - 1; i >= 0; i--) {
         Result result = (i < len ? Result(digits[i]) : 0)
-            + (i < rhs.len ? Result(rhs.digits[i]) : 0);
+            + (i < right.len ? Result(right.digits[i]) : 0);
         set_carry_loop(result, i);
     };
 
@@ -54,9 +54,9 @@ BigInt& BigInt::sub_ordered(const Digit d) {
     return sub_ordered(BigInt(d));
 }
 
-BigInt& BigInt::sub_ordered(const BigInt& rhs) {
+BigInt& BigInt::sub_ordered(const BigInt& right) {
     for (int i = len - 1; i >= 0; i--) {
-        ResultSigned result = ResultSigned(digits[i]) - (i < rhs.len ? ResultSigned(rhs.digits[i]) : 0);
+        ResultSigned result = ResultSigned(digits[i]) - (i < right.len ? ResultSigned(right.digits[i]) : 0);
         set_carry_loop_signed(result, i);
     };
 
@@ -68,19 +68,19 @@ BigInt& BigInt::mul(const Digit d) {
     return mul(BigInt(d));
 }
 
-BigInt& BigInt::mul(const BigInt& rhs) {
+BigInt& BigInt::mul(const BigInt& right) {
     // Shortcut if either side is zero.
     if (len == 0) {
         return *this;
-    } else if (rhs.len == 0) {
+    } else if (right.len == 0) {
         digits.clear();
         set_properties();
         return *this;
     }
 
     for (int i = len - 1; i >= 0; i--) {
-        for (int j = rhs.len - 1; j >= 0; j--) {
-            Result result = Result(digits[i]) * Result(rhs.digits[j]);
+        for (int j = right.len - 1; j >= 0; j--) {
+            Result result = Result(digits[i]) * Result(right.digits[j]);
             set_carry_loop(result, i + j);
         };
     };
@@ -93,7 +93,7 @@ BigInt& BigInt::mod_nonzero(const Digit d) {
     return mod_nonzero(BigInt(d));
 }
 
-BigInt& BigInt::mod_nonzero(const BigInt& rhs) {
+BigInt& BigInt::mod_nonzero(const BigInt& right) {
     // Shortcut if LHS is zero.
     if (len == 0) {
         return *this;
@@ -103,13 +103,13 @@ BigInt& BigInt::mod_nonzero(const BigInt& rhs) {
     digits.clear();
     for (int i = len - 1; i >= 0; i--) {
         unshift(copy[i]);
-        while (comp(rhs) != LESS) {
-            if (len == 1 && rhs.len == 1) {
-                digits[0] %= rhs.digits[0];
+        while (comp(right) != LESS) {
+            if (len == 1 && right.len == 1) {
+                digits[0] %= right.digits[0];
                 break;
             }
 
-            sub_ordered(rhs);
+            sub_ordered(right);
         }
     }
 

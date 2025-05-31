@@ -42,20 +42,20 @@ std::string Num::to_string() const {
     return stream.str();
 }
 
-Num Num::add(const Num rhs) const {
-    // If either number is zero, return the other number.
+Num Num::add(const Num right) const {
+    // If either number is zero, return the right number.
     // ex: (+8) + (0) == (+8), or (0) + (-8) == (-8)
-    if (rhs.sign == 0) {
+    if (right.sign == 0) {
         return *this;
     } else if (sign == 0) {
-        return rhs;
+        return right;
     }
 
-    BigInt this_n_scaled = BigInt(numerator).mul(rhs.denominator);
-    BigInt other_n_scaled = BigInt(denominator).mul(rhs.numerator);
-    const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
+    BigInt left_n_scaled = BigInt(numerator).mul(right.denominator);
+    BigInt right_n_scaled = BigInt(denominator).mul(right.numerator);
+    const BigInt::Comp comp_sign = left_n_scaled.comp(right_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
-        if (sign == rhs.sign) {
+        if (sign == right.sign) {
             // Equal magnitues and same signs: Double.
             // ex: (+6) + (+6) == (+12), or (-6) + (-6) == (-12)
             return Num(
@@ -70,37 +70,37 @@ Num Num::add(const Num rhs) const {
         }
     }
 
-    BigInt d_scaled = BigInt(denominator).mul(rhs.denominator);
-    if (sign == 1 && rhs.sign == -1 && comp_sign == BigInt::GREATER) {
+    BigInt d_scaled = BigInt(denominator).mul(right.denominator);
+    if (sign == 1 && right.sign == -1 && comp_sign == BigInt::GREATER) {
         // Subtract.
         // ex: (+7) + (-5) == (+2)
         return Num(
             1,
-            this_n_scaled.sub_ordered(other_n_scaled),
+            left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
         );
-    } else if (sign == 1 && rhs.sign == -1 && comp_sign == BigInt::LESS) {
+    } else if (sign == 1 && right.sign == -1 && comp_sign == BigInt::LESS) {
         // Subtract reversed, then negate the result.
         // ex: (+5) + (-7) == (-2)
         return Num(
             -1,
-            other_n_scaled.sub_ordered(this_n_scaled),
+            right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == 1 && comp_sign == BigInt::GREATER) {
+    } else if (sign == -1 && right.sign == 1 && comp_sign == BigInt::GREATER) {
         // Subtract, then negate the result.
         // ex: (-7) + (+5) == (-2)
         return Num(
             -1,
-            this_n_scaled.sub_ordered(other_n_scaled),
+            left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == 1 && comp_sign == BigInt::LESS) {
+    } else if (sign == -1 && right.sign == 1 && comp_sign == BigInt::LESS) {
         // Subtract reversed.
         // ex: (-5) + (+7) == (+2)
         return Num(
             1,
-            other_n_scaled.sub_ordered(this_n_scaled),
+            right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
         );
     } else {
@@ -109,24 +109,24 @@ Num Num::add(const Num rhs) const {
         // ex: (+5) + (+7) == (+12), or (-5) + (-7) == (-12)
         return Num(
             sign,
-            this_n_scaled.add(other_n_scaled),
+            left_n_scaled.add(right_n_scaled),
             d_scaled
         );
     }
 }
 
-Num Num::sub(const Num rhs) const {
+Num Num::sub(const Num right) const {
     // If the sub is zero, return this.
     // ex: (+8) - (0) == (+8), or (-8) - (0) == (-8)
-    if (rhs.sign == 0) {
+    if (right.sign == 0) {
         return *this;
     }
 
-    BigInt this_n_scaled = BigInt(numerator).mul(rhs.denominator);
-    BigInt other_n_scaled = BigInt(denominator).mul(rhs.numerator);
-    const BigInt::Comp comp_sign = this_n_scaled.comp(other_n_scaled);
+    BigInt left_n_scaled = BigInt(numerator).mul(right.denominator);
+    BigInt right_n_scaled = BigInt(denominator).mul(right.numerator);
+    const BigInt::Comp comp_sign = left_n_scaled.comp(right_n_scaled);
     if (comp_sign == BigInt::EQUAL) {
-        if (sign == rhs.sign) {
+        if (sign == right.sign) {
             // Equal magnitues and same signs: Zero.
             // ex: (+6) - (+6) == (0), or (-6) - (-6) == (0)
             return Num();
@@ -141,37 +141,37 @@ Num Num::sub(const Num rhs) const {
         }
     }
 
-    BigInt d_scaled = BigInt(denominator).mul(rhs.denominator);
-    if (sign == 1 && rhs.sign == 1 && comp_sign == BigInt::GREATER) {
+    BigInt d_scaled = BigInt(denominator).mul(right.denominator);
+    if (sign == 1 && right.sign == 1 && comp_sign == BigInt::GREATER) {
         // Subtract.
         // ex: (+7) - (+5) == (+2)
         return Num(
             1,
-            this_n_scaled.sub_ordered(other_n_scaled),
+            left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
         );
-    } else if (sign == 1 && rhs.sign == 1 && comp_sign == BigInt::LESS) {
+    } else if (sign == 1 && right.sign == 1 && comp_sign == BigInt::LESS) {
         // Subtract reversed, then negate the result.
         // ex: (+5) - (+7) == (-2)
         return Num(
             -1,
-            other_n_scaled.sub_ordered(this_n_scaled),
+            right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == -1 && comp_sign == BigInt::GREATER) {
+    } else if (sign == -1 && right.sign == -1 && comp_sign == BigInt::GREATER) {
         // Subtract, then negate the result.
         // ex: (-7) - (-5) == (-2)
         return Num(
             -1,
-            this_n_scaled.sub_ordered(other_n_scaled),
+            left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
         );
-    } else if (sign == -1 && rhs.sign == -1 && comp_sign == BigInt::LESS) {
+    } else if (sign == -1 && right.sign == -1 && comp_sign == BigInt::LESS) {
         // Subtract reversed.
         // ex: (-5) - (-7) == (+2)
         return Num(
             1,
-            other_n_scaled.sub_ordered(this_n_scaled),
+            right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
         );
     } else {
@@ -180,27 +180,27 @@ Num Num::sub(const Num rhs) const {
         // ex: (+5) - (-7) == (+12), or (-5) - (+7) == (-12)
         return Num(
             sign,
-            this_n_scaled.add(other_n_scaled),
+            left_n_scaled.add(right_n_scaled),
             d_scaled
         );
     }
 }
 
-Num Num::mul(const Num rhs) const {
+Num Num::mul(const Num right) const {
     // If either number is zero, return zero.
-    if (sign == 0 || rhs.sign == 0) {
+    if (sign == 0 || right.sign == 0) {
         return Num();
     }
 
     // Multiply.
     return Num(
-        sign * rhs.sign,
-        BigInt(numerator).mul(rhs.numerator),
-        BigInt(denominator).mul(rhs.denominator)
+        sign * right.sign,
+        BigInt(numerator).mul(right.numerator),
+        BigInt(denominator).mul(right.denominator)
     );
 }
 
-Num Num::div_nonzero(const Num rhs) const {
+Num Num::div_nonzero(const Num right) const {
     // If the dividend is zero, return zero.
     if (sign == 0) {
         return Num();
@@ -208,9 +208,9 @@ Num Num::div_nonzero(const Num rhs) const {
 
     // Multiply reciprocals.
     return Num(
-        sign * rhs.sign,
-        BigInt(numerator).mul(rhs.denominator),
-        BigInt(denominator).mul(rhs.numerator)
+        sign * right.sign,
+        BigInt(numerator).mul(right.denominator),
+        BigInt(denominator).mul(right.numerator)
     );
 }
 
