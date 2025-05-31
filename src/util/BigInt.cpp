@@ -106,9 +106,10 @@ BigInt& BigInt::mod_nonzero(const BigInt& rhs) {
         while (comp(rhs) != LESS) {
             if (len == 1 && rhs.len == 1) {
                 digits[0] %= rhs.digits[0];
-            } else {
-                sub_ordered(rhs);
+                break;
             }
+
+            sub_ordered(rhs);
         }
     }
 
