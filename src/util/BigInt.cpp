@@ -132,7 +132,7 @@ void BigInt::unshift(const Digit d) {
 
 void BigInt::set_properties() {
     // Remove leading 0s.
-    for (int i = digits.size() - 1; digits[i] == 0 && i >= 0; i--) {
+    for (int i = digits.size() - 1; i >= 0 && digits[i] == 0; i--) {
         digits.pop_back();
     }
 
@@ -148,7 +148,9 @@ void BigInt::set_properties() {
 
 void BigInt::set_carry_loop(Result carry, const int start_digit) {
     // Clear the start digit.
-    digits[start_digit] = 0;
+    if (start_digit < len) {
+        digits[start_digit] = 0;
+    }
 
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
     for (int d = start_digit; carry > 0; d++) {
@@ -171,7 +173,9 @@ void BigInt::set_carry_loop(Result carry, const int start_digit) {
 
 void BigInt::set_carry_loop_signed(ResultSigned carry, const int start_digit) {
     // Clear the start digit.
-    digits[start_digit] = 0;
+    if (start_digit < len) {
+        digits[start_digit] = 0;
+    }
 
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
     for (int d = start_digit; carry != 0; d++) {
