@@ -1,9 +1,5 @@
 #include "Num.hpp"
 
-Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {
-    type_id = T_NUM;
-}
-
 Num::Num(const int s, const BigInt& n, const BigInt& d) : is_int(d.is_one), sign(s), numerator(n), denominator(d) {
     type_id = T_NUM;
 }
@@ -216,4 +212,8 @@ Num Num::div_nonzero(const Num rhs) const {
         BigInt(numerator).mul(rhs.denominator),
         BigInt(denominator).mul(rhs.numerator)
     );
+}
+
+Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {
+    type_id = T_NUM;
 }

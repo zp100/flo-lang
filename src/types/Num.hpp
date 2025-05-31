@@ -10,11 +10,9 @@
 class Num : public Value {
     public:
 
-    const static int SIMPLIFY_MIN_SIZE = 3;
     const bool is_int;
     const int sign;
 
-    Num(); // zero
     Num(const int, const BigInt&, const BigInt&);
     static Ptr from_string(const std::string);
     std::string to_string() const override;
@@ -27,4 +25,6 @@ class Num : public Value {
 
     const BigInt numerator;
     const BigInt denominator;
+
+    Num(); // zero
 };

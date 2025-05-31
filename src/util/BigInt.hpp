@@ -7,8 +7,6 @@ class BigInt {
     public:
 
     using Digit = uint32_t;
-    using Result = uint64_t;
-    using ResultSigned = int64_t;
 
     enum Comp {
         GREATER = 1,
@@ -16,7 +14,6 @@ class BigInt {
         EQUAL = 0,
     };
 
-    static const Result DIGIT_SIZE_FACTOR = Result(UINT32_MAX) + 1;
     int len;
     bool is_one;
     double as_double;
@@ -34,6 +31,11 @@ class BigInt {
     BigInt& mod_nonzero(const BigInt&);
 
     private:
+
+    using Result = uint64_t;
+    using ResultSigned = int64_t;
+
+    static const Result DIGIT_SIZE_FACTOR = Result(UINT32_MAX) + 1;
 
     std::vector<Digit> digits;
 
