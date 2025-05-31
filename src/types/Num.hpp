@@ -14,8 +14,7 @@ class Num : public Value {
     const bool is_int;
     const int sign;
 
-    Num();
-    Num(const int, const BigInt::Digit, const BigInt::Digit);
+    Num(); // zero
     Num(const int, const BigInt&, const BigInt&);
     static Ptr from_string(const std::string);
     std::string to_string() const override;

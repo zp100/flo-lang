@@ -1,17 +1,18 @@
 #include "BigInt.hpp"
 
-BigInt::BigInt(const Digit d) : digits(std::vector<Digit>(1, d)) {
+BigInt::BigInt(const Digit d) {
+    if (d > 0) {
+        digits.push_back(d);
+    }
     set_properties();
 }
 
 BigInt::Comp BigInt::comp(const BigInt::Digit d) const {
-    if (len > 1 || digits[0] > d) {
-        return GREATER;
-    } else if (digits[0] < d) {
-        return LESS;
+    switch (len) {
+        case 0: return (d == 0 ? EQUAL : LESS);
+        case 1: return (digits[0] > d ? GREATER : digits[0] < d ? LESS : EQUAL);
+        default: return GREATER;
     }
-
-    return EQUAL;
 }
 
 BigInt::Comp BigInt::comp(const BigInt& rhs) const {
@@ -49,11 +50,11 @@ BigInt& BigInt::add(const BigInt& rhs) {
     return *this;
 }
 
-BigInt& BigInt::sub(const Digit d) {
-    return sub(BigInt(d));
+BigInt& BigInt::sub_ordered(const Digit d) {
+    return sub_ordered(BigInt(d));
 }
 
-BigInt& BigInt::sub(const BigInt& rhs) {
+BigInt& BigInt::sub_ordered(const BigInt& rhs) {
     for (int i = len - 1; i >= 0; i--) {
         ResultSigned result = ResultSigned(digits[i]) - (i < rhs.len ? ResultSigned(rhs.digits[i]) : 0);
         set_carry_loop_signed(result, i);
@@ -68,6 +69,13 @@ BigInt& BigInt::mul(const Digit d) {
 }
 
 BigInt& BigInt::mul(const BigInt& rhs) {
+    // Shortcut if either side is zero.
+    if (len == 0 || rhs.len == 0) {
+        digits.clear();
+        set_properties();
+        return *this;
+    }
+
     for (int i = len - 1; i >= 0; i--) {
         for (int j = rhs.len - 1; j >= 0; j--) {
             Result result = Result(digits[i]) * Result(rhs.digits[j]);
@@ -79,31 +87,53 @@ BigInt& BigInt::mul(const BigInt& rhs) {
     return *this;
 }
 
-BigInt& BigInt::div(const Digit d) {
-    Digit remainder = 0;
+BigInt& BigInt::int_div_nonzero(const Digit d) {
+    return int_div_nonzero(BigInt(d));
+}
+
+BigInt& BigInt::int_div_nonzero(const BigInt& rhs) {
+    // Shortcut if lhs <= rhs.
+    switch (comp(rhs)) {
+        case LESS:
+            digits.clear();
+            set_properties();
+            return *this;
+
+        case EQUAL:
+            digits.clear();
+            digits.push_back(1);
+            set_properties();
+            return *this;
+    }
+
+    // Long division.
+    BigInt remainder (0);
     for (int i = len - 1; i >= 0; i--) {
-        Result result = (Result(digits[i]) + remainder) / d;
-        remainder = (Result(digits[i]) + remainder) % d;
-        set_carry_loop(result, i);
+        remainder.unshift(digits[i]);
+
+        Digit count = 0;
+        while (remainder.comp(rhs) != LESS) {
+            remainder.sub_ordered(rhs);
+            count++;
+        }
+
+        digits[i] = count;
     }
 
     set_properties();
     return *this;
 }
 
-BigInt& BigInt::mod(const Digit d) {
-    Digit remainder = 0;
-    for (int i = len - 1; i >= 0; i--) {
-        remainder = (Result(digits[i]) + remainder) % d;
-    }
-    digits.resize(1);
-    digits[0] = remainder;
-
-    set_properties();
-    return *this;
+void BigInt::unshift(const Digit d) {
+    digits.insert(digits.begin(), d);
 }
 
 void BigInt::set_properties() {
+    // Remove leading 0s.
+    for (int i = digits.size() - 1; digits[i] == 0 && i >= 0; i--) {
+        digits.pop_back();
+    }
+
     len = digits.size();
     is_one = comp(1) == EQUAL;
 

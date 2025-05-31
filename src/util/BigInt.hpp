@@ -26,17 +26,18 @@ class BigInt {
     Comp comp(const BigInt&) const;
     BigInt& add(const Digit);
     BigInt& add(const BigInt&);
-    BigInt& sub(const Digit);
-    BigInt& sub(const BigInt&);
+    BigInt& sub_ordered(const Digit);
+    BigInt& sub_ordered(const BigInt&);
     BigInt& mul(const Digit);
     BigInt& mul(const BigInt&);
-    BigInt& div(const Digit);
-    BigInt& mod(const Digit);
+    BigInt& int_div_nonzero(const Digit);
+    BigInt& int_div_nonzero(const BigInt&);
 
     private:
 
     std::vector<Digit> digits;
 
+    void unshift(const Digit);
     void set_properties();
     void set_carry_loop(Result, const int);
     void set_carry_loop_signed(ResultSigned, const int);

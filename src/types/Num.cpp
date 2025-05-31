@@ -4,10 +4,6 @@ Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {
     type_id = T_NUM;
 }
 
-Num::Num(const int s, const BigInt::Digit n, const BigInt::Digit d) : is_int(d == 1), sign(s), numerator(n), denominator(d) {
-    type_id = T_NUM;
-}
-
 Num::Num(const int s, const BigInt& n, const BigInt& d) : is_int(d.is_one), sign(s), numerator(n), denominator(d) {
     type_id = T_NUM;
 }
@@ -84,7 +80,7 @@ Num Num::add(const Num rhs) const {
         // ex: (+7) + (-5) == (+2)
         return Num(
             1,
-            this_n_scaled.sub(other_n_scaled),
+            this_n_scaled.sub_ordered(other_n_scaled),
             d_scaled
         );
     } else if (sign == 1 && rhs.sign == -1 && comp_sign == BigInt::LESS) {
@@ -92,7 +88,7 @@ Num Num::add(const Num rhs) const {
         // ex: (+5) + (-7) == (-2)
         return Num(
             -1,
-            other_n_scaled.sub(this_n_scaled),
+            other_n_scaled.sub_ordered(this_n_scaled),
             d_scaled
         );
     } else if (sign == -1 && rhs.sign == 1 && comp_sign == BigInt::GREATER) {
@@ -100,7 +96,7 @@ Num Num::add(const Num rhs) const {
         // ex: (-7) + (+5) == (-2)
         return Num(
             -1,
-            this_n_scaled.sub(other_n_scaled),
+            this_n_scaled.sub_ordered(other_n_scaled),
             d_scaled
         );
     } else if (sign == -1 && rhs.sign == 1 && comp_sign == BigInt::LESS) {
@@ -108,7 +104,7 @@ Num Num::add(const Num rhs) const {
         // ex: (-5) + (+7) == (+2)
         return Num(
             1,
-            other_n_scaled.sub(this_n_scaled),
+            other_n_scaled.sub_ordered(this_n_scaled),
             d_scaled
         );
     } else {
@@ -124,7 +120,7 @@ Num Num::add(const Num rhs) const {
 }
 
 Num Num::sub(const Num rhs) const {
-    // If the subtrahend is zero, return this.
+    // If the sub is zero, return this.
     // ex: (+8) - (0) == (+8), or (-8) - (0) == (-8)
     if (rhs.sign == 0) {
         return *this;
@@ -155,7 +151,7 @@ Num Num::sub(const Num rhs) const {
         // ex: (+7) - (+5) == (+2)
         return Num(
             1,
-            this_n_scaled.sub(other_n_scaled),
+            this_n_scaled.sub_ordered(other_n_scaled),
             d_scaled
         );
     } else if (sign == 1 && rhs.sign == 1 && comp_sign == BigInt::LESS) {
@@ -163,7 +159,7 @@ Num Num::sub(const Num rhs) const {
         // ex: (+5) - (+7) == (-2)
         return Num(
             -1,
-            other_n_scaled.sub(this_n_scaled),
+            other_n_scaled.sub_ordered(this_n_scaled),
             d_scaled
         );
     } else if (sign == -1 && rhs.sign == -1 && comp_sign == BigInt::GREATER) {
@@ -171,7 +167,7 @@ Num Num::sub(const Num rhs) const {
         // ex: (-7) - (-5) == (-2)
         return Num(
             -1,
-            this_n_scaled.sub(other_n_scaled),
+            this_n_scaled.sub_ordered(other_n_scaled),
             d_scaled
         );
     } else if (sign == -1 && rhs.sign == -1 && comp_sign == BigInt::LESS) {
@@ -179,7 +175,7 @@ Num Num::sub(const Num rhs) const {
         // ex: (-5) - (-7) == (+2)
         return Num(
             1,
-            other_n_scaled.sub(this_n_scaled),
+            other_n_scaled.sub_ordered(this_n_scaled),
             d_scaled
         );
     } else {
