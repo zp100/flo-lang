@@ -66,9 +66,7 @@ void parse(std::ifstream& source_file) {
                 parse_function_name(cx);
             break;
 
-            default:
-                // NOOP
-                ;
+            default: ; // NOOP
         }
     }
 

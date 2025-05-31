@@ -104,6 +104,8 @@ BigInt& BigInt::int_div_nonzero(const BigInt& rhs) {
             digits.push_back(1);
             set_properties();
             return *this;
+
+        default: ; // NOOP
     }
 
     // Long division.
