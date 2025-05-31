@@ -43,7 +43,7 @@ std::string Num::to_string() const {
 }
 
 Num Num::add(const Num right) const {
-    // If either number is zero, return the right number.
+    // If either number is zero, return the other number.
     // ex: (+8) + (0) == (+8), or (0) + (-8) == (-8)
     if (right.sign == 0) {
         return *this;
@@ -212,6 +212,13 @@ Num Num::div_nonzero(const Num right) const {
         BigInt(numerator).mul(right.denominator),
         BigInt(denominator).mul(right.numerator)
     );
+}
+
+Num Num::mod_nonzero(const Num right) const {
+    // If either number is zero, return zero.
+    if (sign == 0 || right.sign == 0) {
+        return Num();
+    }
 }
 
 Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {

@@ -20,6 +20,7 @@ class Num : public Value {
     Num sub(const Num) const;
     Num mul(const Num) const;
     Num div_nonzero(const Num) const;
+    Num mod_nonzero(const Num) const;
 
     private:
 
