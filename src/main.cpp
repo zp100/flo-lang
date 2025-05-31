@@ -133,7 +133,7 @@ void parse_number_signed(ParseContext& cx) {
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_DECIMALS;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -150,14 +150,14 @@ void parse_number(ParseContext& cx) {
         // Switch to scientific notation exponent.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
+    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
         // End number.
         Value::Ptr value = Num::from_string(cx.token);
         cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -170,14 +170,14 @@ void parse_number_decimals(ParseContext& cx) {
         // Switch to scientific notation exponent.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
+    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
         // End number.
         Value::Ptr value = Num::from_string(cx.token);
         cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -192,7 +192,7 @@ void parse_number_scientific_start(ParseContext& cx) {
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_SCIENTIFIC;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -203,7 +203,7 @@ void parse_number_scientific_signed(ParseContext& cx) {
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_SCIENTIFIC;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -212,14 +212,14 @@ void parse_number_scientific(ParseContext& cx) {
     if (cx.next >= '0' && cx.next <= '9') {
         // Continue number.
         cx.token.push_back(cx.next);
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
+    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
         // End number.
         Value::Ptr value = Num::from_string(cx.token);
         cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -228,7 +228,7 @@ void parse_word(ParseContext& cx) {
     if ((cx.next >= '0' && cx.next <= '9') || (cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
         // Continue word.
         cx.token.push_back(cx.next);
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
+    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
         // // End word.
         // Value value (Value::FUNCTION, cx.token);
 
@@ -247,7 +247,7 @@ void parse_word(ParseContext& cx) {
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -258,7 +258,7 @@ void parse_call_start(ParseContext& cx) {
         cx.token.push_back(cx.next);
         cx.state = ParseContext::FUNCTION_NAME;
     } else {
-        // Error or end of file.
+        // Error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -267,7 +267,7 @@ void parse_function_name(ParseContext& cx) {
     if ((cx.next >= '0' && cx.next <= '9') || (cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
         // Continue function name.
         cx.token.push_back(cx.next);
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
+    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
         // End function name.
         if (cx.token == "true" || cx.token == "false" || cx.token == "null") {
             // Error.

@@ -8,7 +8,6 @@ To do:
     -   More comments
     -   More sub-folders
     -   Clean up Makefile
-    -   Convert "const {type}*" types to smart pointers
     -   What happens for an invalid function name?
     -   Parentheses
     -   More lib functions
