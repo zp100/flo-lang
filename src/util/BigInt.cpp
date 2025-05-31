@@ -87,39 +87,18 @@ BigInt& BigInt::mul(const BigInt& rhs) {
     return *this;
 }
 
-BigInt& BigInt::int_div_nonzero(const Digit d) {
-    return int_div_nonzero(BigInt(d));
+BigInt& BigInt::mod_nonzero(const Digit d) {
+    return mod_nonzero(BigInt(d));
 }
 
-BigInt& BigInt::int_div_nonzero(const BigInt& rhs) {
-    // Shortcut if lhs <= rhs.
-    switch (comp(rhs)) {
-        case LESS:
-            digits.clear();
-            set_properties();
-            return *this;
-
-        case EQUAL:
-            digits.clear();
-            digits.push_back(1);
-            set_properties();
-            return *this;
-
-        default: ; // NOOP
-    }
-
-    // Long division.
-    BigInt remainder (0);
+BigInt& BigInt::mod_nonzero(const BigInt& rhs) {
+    std::vector<Digit> copy (digits);
+    digits.clear();
     for (int i = len - 1; i >= 0; i--) {
-        remainder.unshift(digits[i]);
-
-        Digit count = 0;
-        while (remainder.comp(rhs) != LESS) {
-            remainder.sub_ordered(rhs);
-            count++;
+        unshift(copy[i]);
+        while (comp(rhs) != LESS) {
+            sub_ordered(rhs);
         }
-
-        digits[i] = count;
     }
 
     set_properties();

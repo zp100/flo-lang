@@ -30,8 +30,8 @@ class BigInt {
     BigInt& sub_ordered(const BigInt&);
     BigInt& mul(const Digit);
     BigInt& mul(const BigInt&);
-    BigInt& int_div_nonzero(const Digit);
-    BigInt& int_div_nonzero(const BigInt&);
+    BigInt& mod_nonzero(const Digit);
+    BigInt& mod_nonzero(const BigInt&);
 
     private:
 
