@@ -70,7 +70,9 @@ BigInt& BigInt::mul(const Digit d) {
 
 BigInt& BigInt::mul(const BigInt& rhs) {
     // Shortcut if either side is zero.
-    if (len == 0 || rhs.len == 0) {
+    if (len == 0) {
+        return *this;
+    } else if (rhs.len == 0) {
         digits.clear();
         set_properties();
         return *this;
@@ -92,6 +94,11 @@ BigInt& BigInt::mod_nonzero(const Digit d) {
 }
 
 BigInt& BigInt::mod_nonzero(const BigInt& rhs) {
+    // Shortcut if LHS is zero.
+    if (len == 0) {
+        return *this;
+    }
+
     std::vector<Digit> copy (digits);
     digits.clear();
     for (int i = len - 1; i >= 0; i--) {
