@@ -104,7 +104,11 @@ BigInt& BigInt::mod_nonzero(const BigInt& rhs) {
     for (int i = len - 1; i >= 0; i--) {
         unshift(copy[i]);
         while (comp(rhs) != LESS) {
-            sub_ordered(rhs);
+            if (len == 1 && rhs.len == 1) {
+                digits[0] %= rhs.digits[0];
+            } else {
+                sub_ordered(rhs);
+            }
         }
     }
 
