@@ -128,6 +128,7 @@ BigInt& BigInt::int_div_nonzero(const BigInt& rhs) {
 
 void BigInt::unshift(const Digit d) {
     digits.insert(digits.begin(), d);
+    set_properties();
 }
 
 void BigInt::set_properties() {
