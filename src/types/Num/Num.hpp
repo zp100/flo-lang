@@ -4,8 +4,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include "Value.hpp"
-#include "../util/BigInt.hpp"
+#include "../Value/Value.hpp"
+#include "../../util/BigInt/BigInt.hpp"
 
 class Num : public Value {
     public:

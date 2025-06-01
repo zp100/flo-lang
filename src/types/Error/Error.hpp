@@ -1,14 +1,14 @@
 #pragma once
-#include "Value.hpp"
+#include "../Value/Value.hpp"
 
-class Bool : public Value {
+class Error : public Value {
     public:
 
-    Bool(const bool);
+    Error(const std::string);
     static Ptr from_string(const std::string);
     std::string to_string() const override;
 
     private:
 
-    const bool value;
+    const std::string error_message;
 };

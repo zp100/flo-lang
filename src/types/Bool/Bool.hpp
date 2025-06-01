@@ -1,11 +1,14 @@
 #pragma once
-#include "Value.hpp"
+#include "../Value/Value.hpp"
 
-class Null : public Value {
+class Bool : public Value {
     public:
 
-    Null();
+    Bool(const bool);
     static Ptr from_string(const std::string);
     std::string to_string() const override;
-};
 
+    private:
+
+    const bool value;
+};

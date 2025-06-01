@@ -3,10 +3,10 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include "types/Num.hpp"
-#include "types/Value.hpp"
-#include "util/ParseContext.hpp"
-#include "lib.hpp"
+#include "types/Num/Num.hpp"
+#include "types/Value/Value.hpp"
+#include "util/ParseContext/ParseContext.hpp"
+#include "lib/lib.hpp"
 
 void parse(std::ifstream& source_file);
 void parse_default(ParseContext& cx);
