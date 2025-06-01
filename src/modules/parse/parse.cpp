@@ -269,7 +269,7 @@ Value::ValueId call_function(ParseContext& cx) {
     Value::Ptr value;
     if (function_map.count(cx.token) > 0) {
         FunctionType _callee_ = function_map[cx.token];
-        value = _callee_(cx);
+        value = _callee_(cx.value_list);
     } else {
         value = Error::from_string("Invalid function \"" + cx.token + "\" called");
     }
