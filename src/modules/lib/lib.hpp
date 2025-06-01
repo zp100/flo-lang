@@ -3,11 +3,11 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "../types/Error/Error.hpp"
-#include "../types/Null/Null.hpp"
-#include "../types/Num/Num.hpp"
-#include "../types/Value/Value.hpp"
-#include "../util/ParseContext/ParseContext.hpp"
+#include "../../types/Error/Error.hpp"
+#include "../../types/Null/Null.hpp"
+#include "../../types/Num/Num.hpp"
+#include "../../types/Value/Value.hpp"
+#include "../../util/ParseContext/ParseContext.hpp"
 
 using FunctionType = std::function<Value::Ptr(ParseContext&)>;
 using MapType = std::map<std::string, FunctionType>;

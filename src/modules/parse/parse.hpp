@@ -1,14 +1,11 @@
 #pragma once
-#include <cctype>
 #include <fstream>
-#include <iostream>
-#include <regex>
-#include "types/Num/Num.hpp"
-#include "types/Value/Value.hpp"
-#include "util/ParseContext/ParseContext.hpp"
-#include "lib/lib.hpp"
+#include "../../types/Num/Num.hpp"
+#include "../../types/Value/Value.hpp"
+#include "../../util/ParseContext/ParseContext.hpp"
+#include "../lib/lib.hpp"
 
-void parse(std::ifstream& source_file);
+std::vector<Value::Ptr> parse(std::ifstream& source_file);
 void parse_default(ParseContext& cx);
 void parse_comment(ParseContext& cx);
 void parse_number_signed(ParseContext& cx);

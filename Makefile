@@ -23,6 +23,6 @@ clean:
 ${BUILD_DIR}/${TARGET}: ${OBJ_FILES}
 	${COMP} $^ -o $@
 
-$(BUILD_DIR)/%.cpp.o: %.cpp %.hpp
+$(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
 	${COMP} ${CPP_FLAGS} -c $< -o $@
