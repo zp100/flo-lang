@@ -8,131 +8,134 @@
 #include "../../types/Null/Null.hpp"
 #include "../../types/Num/Num.hpp"
 #include "../../types/Value/Value.hpp"
+#include "../../util/BigInt/BigInt.hpp"
 #include "../../util/ParseContext/ParseContext.hpp"
 
-using FunctionType = std::function<Value::Ptr(ParseContext::ValueList)>;
-using MapType = std::map<std::string, FunctionType>;
+namespace Lib {
+    using FunctionType = std::function<Value::Ptr(ParseContext::ValueList)>;
+    using MapType = std::map<std::string, FunctionType>;
 
-std::map<std::string, FunctionType> getFunctionMap();
-template <typename T> T cast(Value::Ptr);
+    std::map<std::string, FunctionType> getFunctionMap();
+    template <typename T> T cast(Value::Ptr);
 
-// TYPE UNARY
-Value::Ptr lib_Bool(const ParseContext::ValueList&);
-Value::Ptr lib_Num(const ParseContext::ValueList&);
-Value::Ptr lib_Char(const ParseContext::ValueList&);
-Value::Ptr lib_Byte(const ParseContext::ValueList&);
-Value::Ptr lib_Symbol(const ParseContext::ValueList&);
-Value::Ptr lib_List(const ParseContext::ValueList&);
-Value::Ptr lib_Hash(const ParseContext::ValueList&);
-Value::Ptr lib_Set(const ParseContext::ValueList&);
+    // TYPE UNARY
+    Value::Ptr t_Bool(const ParseContext::ValueList&);
+    Value::Ptr t_Num(const ParseContext::ValueList&);
+    Value::Ptr t_Char(const ParseContext::ValueList&);
+    Value::Ptr t_Byte(const ParseContext::ValueList&);
+    Value::Ptr t_Symbol(const ParseContext::ValueList&);
+    Value::Ptr t_List(const ParseContext::ValueList&);
+    Value::Ptr t_Hash(const ParseContext::ValueList&);
+    Value::Ptr t_Set(const ParseContext::ValueList&);
 
-// MATH UNARY
-Value::Ptr lib_neg(const ParseContext::ValueList&);
-Value::Ptr lib_abs(const ParseContext::ValueList&);
-Value::Ptr lib_round(const ParseContext::ValueList&);
-Value::Ptr lib_floor(const ParseContext::ValueList&);
-Value::Ptr lib_ceil(const ParseContext::ValueList&);
+    // MATH UNARY
+    Value::Ptr neg(const ParseContext::ValueList&);
+    Value::Ptr abs(const ParseContext::ValueList&);
+    Value::Ptr round(const ParseContext::ValueList&);
+    Value::Ptr floor(const ParseContext::ValueList&);
+    Value::Ptr ceil(const ParseContext::ValueList&);
 
-// MATH BINARY
-Value::Ptr lib_add(const ParseContext::ValueList&);
-Value::Ptr lib_sub(const ParseContext::ValueList&);
-Value::Ptr lib_mul(const ParseContext::ValueList&);
-Value::Ptr lib_div(const ParseContext::ValueList&);
-Value::Ptr lib_mod(const ParseContext::ValueList&);
-Value::Ptr lib_divmod(const ParseContext::ValueList&);
-Value::Ptr lib_exp(const ParseContext::ValueList&);
+    // MATH BINARY
+    Value::Ptr add(const ParseContext::ValueList&);
+    Value::Ptr sub(const ParseContext::ValueList&);
+    Value::Ptr mul(const ParseContext::ValueList&);
+    Value::Ptr div(const ParseContext::ValueList&);
+    Value::Ptr mod(const ParseContext::ValueList&);
+    Value::Ptr divmod(const ParseContext::ValueList&);
+    Value::Ptr exp(const ParseContext::ValueList&);
 
-// MATH GROUP (0+)
-Value::Ptr lib_sum(const ParseContext::ValueList&);
-Value::Ptr lib_prod(const ParseContext::ValueList&);
+    // MATH GROUP (0+)
+    Value::Ptr sum(const ParseContext::ValueList&);
+    Value::Ptr prod(const ParseContext::ValueList&);
 
-// MATH GROUP (1+)
-Value::Ptr lib_min(const ParseContext::ValueList&);
-Value::Ptr lib_max(const ParseContext::ValueList&);
-Value::Ptr lib_avg(const ParseContext::ValueList&);
+    // MATH GROUP (1+)
+    Value::Ptr min(const ParseContext::ValueList&);
+    Value::Ptr max(const ParseContext::ValueList&);
+    Value::Ptr avg(const ParseContext::ValueList&);
 
-// LOGICAL UNARY
-Value::Ptr lib_not(const ParseContext::ValueList&);
+    // LOGICAL UNARY
+    Value::Ptr l_not(const ParseContext::ValueList&);
 
-// LOGICAL BINARY
-Value::Ptr lib_and(const ParseContext::ValueList&);
-Value::Ptr lib_or(const ParseContext::ValueList&);
-Value::Ptr lib_xor(const ParseContext::ValueList&);
-Value::Ptr lib_else(const ParseContext::ValueList&);
+    // LOGICAL BINARY
+    Value::Ptr l_and(const ParseContext::ValueList&);
+    Value::Ptr l_or(const ParseContext::ValueList&);
+    Value::Ptr l_xor(const ParseContext::ValueList&);
+    Value::Ptr l_else(const ParseContext::ValueList&);
 
-// LOGICAL GROUP (2+)
-Value::Ptr lib_alland(const ParseContext::ValueList&);
-Value::Ptr lib_allor(const ParseContext::ValueList&);
-Value::Ptr lib_allxor(const ParseContext::ValueList&);
+    // LOGICAL GROUP (2+)
+    Value::Ptr alland(const ParseContext::ValueList&);
+    Value::Ptr allor(const ParseContext::ValueList&);
+    Value::Ptr allxor(const ParseContext::ValueList&);
 
-// COMPARISON BINARY
-Value::Ptr lib_lt(const ParseContext::ValueList&);
-Value::Ptr lib_lteq(const ParseContext::ValueList&);
-Value::Ptr lib_gt(const ParseContext::ValueList&);
-Value::Ptr lib_gteq(const ParseContext::ValueList&);
-Value::Ptr lib_eq(const ParseContext::ValueList&);
-Value::Ptr lib_neq(const ParseContext::ValueList&);
-Value::Ptr lib_in(const ParseContext::ValueList&);
-// isinstance or instanceof?
+    // COMPARISON BINARY
+    Value::Ptr lt(const ParseContext::ValueList&);
+    Value::Ptr lteq(const ParseContext::ValueList&);
+    Value::Ptr gt(const ParseContext::ValueList&);
+    Value::Ptr gteq(const ParseContext::ValueList&);
+    Value::Ptr eq(const ParseContext::ValueList&);
+    Value::Ptr neq(const ParseContext::ValueList&);
+    Value::Ptr in(const ParseContext::ValueList&);
+    // isinstance or instanceof?
 
-// COMPARISON TERNARY
-Value::Ptr lib_between(const ParseContext::ValueList&);
+    // COMPARISON TERNARY
+    Value::Ptr between(const ParseContext::ValueList&);
 
-// GROUPS
-Value::Ptr lib_size(const ParseContext::ValueList&);
-Value::Ptr lib_at(const ParseContext::ValueList&);
-Value::Ptr lib_with(const ParseContext::ValueList&);
-Value::Ptr lib_add(const ParseContext::ValueList&);
-Value::Ptr lib_remove(const ParseContext::ValueList&);
-Value::Ptr lib_push(const ParseContext::ValueList&);
-Value::Ptr lib_pop(const ParseContext::ValueList&);
-Value::Ptr lib_shift(const ParseContext::ValueList&);
-Value::Ptr lib_unshift(const ParseContext::ValueList&);
-Value::Ptr lib_endswith(const ParseContext::ValueList&);
-Value::Ptr lib_slice(const ParseContext::ValueList&);
-Value::Ptr lib_replace(const ParseContext::ValueList&);
-Value::Ptr lib_insert(const ParseContext::ValueList&);
-Value::Ptr lib_reverse(const ParseContext::ValueList&);
-Value::Ptr lib_first(const ParseContext::ValueList&);
-Value::Ptr lib_last(const ParseContext::ValueList&);
-Value::Ptr lib_split(const ParseContext::ValueList&);
-Value::Ptr lib_join(const ParseContext::ValueList&);
-Value::Ptr lib_keys(const ParseContext::ValueList&);
-Value::Ptr lib_values(const ParseContext::ValueList&);
-Value::Ptr lib_entries(const ParseContext::ValueList&);
-Value::Ptr lib_fill(const ParseContext::ValueList&);
-// etc...
+    // GROUPS
+    Value::Ptr size(const ParseContext::ValueList&);
+    Value::Ptr at(const ParseContext::ValueList&);
+    Value::Ptr with(const ParseContext::ValueList&);
+    Value::Ptr add(const ParseContext::ValueList&);
+    Value::Ptr remove(const ParseContext::ValueList&);
+    Value::Ptr push(const ParseContext::ValueList&);
+    Value::Ptr pop(const ParseContext::ValueList&);
+    Value::Ptr shift(const ParseContext::ValueList&);
+    Value::Ptr unshift(const ParseContext::ValueList&);
+    Value::Ptr endswith(const ParseContext::ValueList&);
+    Value::Ptr slice(const ParseContext::ValueList&);
+    Value::Ptr replace(const ParseContext::ValueList&);
+    Value::Ptr insert(const ParseContext::ValueList&);
+    Value::Ptr reverse(const ParseContext::ValueList&);
+    Value::Ptr first(const ParseContext::ValueList&);
+    Value::Ptr last(const ParseContext::ValueList&);
+    Value::Ptr split(const ParseContext::ValueList&);
+    Value::Ptr join(const ParseContext::ValueList&);
+    Value::Ptr keys(const ParseContext::ValueList&);
+    Value::Ptr values(const ParseContext::ValueList&);
+    Value::Ptr entries(const ParseContext::ValueList&);
+    Value::Ptr fill(const ParseContext::ValueList&);
+    // etc...
 
-// NESTED GROUPS
-Value::Ptr lib_flat(const ParseContext::ValueList&);
-Value::Ptr lib_flateach(const ParseContext::ValueList&);
-Value::Ptr lib_zip(const ParseContext::ValueList&);
+    // NESTED GROUPS
+    Value::Ptr flat(const ParseContext::ValueList&);
+    Value::Ptr flateach(const ParseContext::ValueList&);
+    Value::Ptr zip(const ParseContext::ValueList&);
 
-// ITERATORS
-Value::Ptr lib_all(const ParseContext::ValueList&);
-Value::Ptr lib_any(const ParseContext::ValueList&);
-Value::Ptr lib_each(const ParseContext::ValueList&);
-Value::Ptr lib_filter(const ParseContext::ValueList&);
-Value::Ptr lib_find(const ParseContext::ValueList&);
-Value::Ptr lib_findlast(const ParseContext::ValueList&);
-Value::Ptr lib_index(const ParseContext::ValueList&);
-Value::Ptr lib_indexlast(const ParseContext::ValueList&);
-Value::Ptr lib_reduce(const ParseContext::ValueList&);
-Value::Ptr lib_sort(const ParseContext::ValueList&);
+    // ITERATORS
+    Value::Ptr all(const ParseContext::ValueList&);
+    Value::Ptr any(const ParseContext::ValueList&);
+    Value::Ptr each(const ParseContext::ValueList&);
+    Value::Ptr filter(const ParseContext::ValueList&);
+    Value::Ptr find(const ParseContext::ValueList&);
+    Value::Ptr findlast(const ParseContext::ValueList&);
+    Value::Ptr index(const ParseContext::ValueList&);
+    Value::Ptr indexlast(const ParseContext::ValueList&);
+    Value::Ptr reduce(const ParseContext::ValueList&);
+    Value::Ptr sort(const ParseContext::ValueList&);
 
-// STRINGS
-Value::Ptr lib_print(const ParseContext::ValueList&);
-Value::Ptr lib_println(const ParseContext::ValueList&);
-Value::Ptr lib_input(const ParseContext::ValueList&);
-Value::Ptr lib_lower(const ParseContext::ValueList&);
-Value::Ptr lib_upper(const ParseContext::ValueList&);
-Value::Ptr lib_islower(const ParseContext::ValueList&);
-Value::Ptr lib_isupper(const ParseContext::ValueList&);
-Value::Ptr lib_trim(const ParseContext::ValueList&);
-// formatting functions...
+    // STRINGS
+    Value::Ptr print(const ParseContext::ValueList&);
+    Value::Ptr println(const ParseContext::ValueList&);
+    Value::Ptr input(const ParseContext::ValueList&);
+    Value::Ptr lower(const ParseContext::ValueList&);
+    Value::Ptr upper(const ParseContext::ValueList&);
+    Value::Ptr islower(const ParseContext::ValueList&);
+    Value::Ptr isupper(const ParseContext::ValueList&);
+    Value::Ptr trim(const ParseContext::ValueList&);
+    // formatting functions...
 
-// MISC
-Value::Ptr lib_call(const ParseContext::ValueList&);
-Value::Ptr lib_spread(const ParseContext::ValueList&);
-Value::Ptr lib_range(const ParseContext::ValueList&);
-Value::Ptr lib_type(const ParseContext::ValueList&);
+    // MISC
+    Value::Ptr call(const ParseContext::ValueList&);
+    Value::Ptr spread(const ParseContext::ValueList&);
+    Value::Ptr range(const ParseContext::ValueList&);
+    Value::Ptr type(const ParseContext::ValueList&);
+}

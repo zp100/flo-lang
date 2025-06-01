@@ -1,6 +1,6 @@
 #include "parse.hpp"
 
-std::vector<Value::Ptr> parse(std::ifstream& source_file) {
+std::vector<Value::Ptr> Parse::parse(std::ifstream& source_file) {
     ParseContext cx = ParseContext();
 
     while (cx.state != ParseContext::EXIT) {
@@ -8,47 +8,47 @@ std::vector<Value::Ptr> parse(std::ifstream& source_file) {
 
         switch (cx.state) {
             case ParseContext::DEFAULT:
-                parse_default(cx);
+                Parse::p_default(cx);
             break;
 
             case ParseContext::COMMENT:
-                parse_comment(cx);
+                Parse::p_comment(cx);
             break;
 
             case ParseContext::NUMBER_SIGNED:
-                parse_number_signed(cx);
+                Parse::p_number_signed(cx);
             break;
 
             case ParseContext::NUMBER:
-                parse_number(cx);
+                Parse::p_number(cx);
             break;
 
             case ParseContext::NUMBER_DECIMALS:
-                parse_number_decimals(cx);
+                Parse::p_number_decimals(cx);
             break;
 
             case ParseContext::NUMBER_SCIENTIFIC_START:
-                parse_number_scientific_start(cx);
+                Parse::p_number_scientific_start(cx);
             break;
 
             case ParseContext::NUMBER_SCIENTIFIC_SIGNED:
-                parse_number_scientific_signed(cx);
+                Parse::p_number_scientific_signed(cx);
             break;
 
             case ParseContext::NUMBER_SCIENTIFIC:
-                parse_number_scientific(cx);
+                Parse::p_number_scientific(cx);
             break;
 
             case ParseContext::WORD:
-                parse_word(cx);
+                Parse::p_word(cx);
             break;
 
             case ParseContext::CALL_START:
-                parse_call_start(cx);
+                Parse::p_call_start(cx);
             break;
 
             case ParseContext::FUNCTION_NAME:
-                parse_function_name(cx);
+                Parse::p_function_name(cx);
             break;
 
             default: ; // NOOP
@@ -58,7 +58,7 @@ std::vector<Value::Ptr> parse(std::ifstream& source_file) {
     return cx.value_list;
 }
 
-void parse_default(ParseContext& cx) {
+void Parse::p_default(ParseContext& cx) {
     if (cx.next == '#') {
         // Start comment.
         cx.state = ParseContext::COMMENT;
@@ -90,7 +90,7 @@ void parse_default(ParseContext& cx) {
     }
 }
 
-void parse_comment(ParseContext& cx) {
+void Parse::p_comment(ParseContext& cx) {
     if (cx.next == '\n') {
         // End comment.
         cx.state = ParseContext::DEFAULT;
@@ -103,7 +103,7 @@ void parse_comment(ParseContext& cx) {
     }
 }
 
-void parse_number_signed(ParseContext& cx) {
+void Parse::p_number_signed(ParseContext& cx) {
     if (cx.next >= '0' && cx.next <= '9') {
         // Continue number.
         cx.token.push_back(cx.next);
@@ -118,7 +118,7 @@ void parse_number_signed(ParseContext& cx) {
     }
 }
 
-void parse_number(ParseContext& cx) {
+void Parse::p_number(ParseContext& cx) {
     if ((cx.next >= '0' && cx.next <= '9') || cx.next == '_') {
         // Continue number.
         cx.token.push_back(cx.next);
@@ -142,7 +142,7 @@ void parse_number(ParseContext& cx) {
     }
 }
 
-void parse_number_decimals(ParseContext& cx) {
+void Parse::p_number_decimals(ParseContext& cx) {
     if (cx.next >= '0' && cx.next <= '9') {
         // Continue number.
         cx.token.push_back(cx.next);
@@ -162,7 +162,7 @@ void parse_number_decimals(ParseContext& cx) {
     }
 }
 
-void parse_number_scientific_start(ParseContext& cx) {
+void Parse::p_number_scientific_start(ParseContext& cx) {
     if (cx.next == '-') {
         // Continue number.
         cx.token.push_back(cx.next);
@@ -177,7 +177,7 @@ void parse_number_scientific_start(ParseContext& cx) {
     }
 }
 
-void parse_number_scientific_signed(ParseContext& cx) {
+void Parse::p_number_scientific_signed(ParseContext& cx) {
     if (cx.next >= '0' && cx.next <= '9') {
         // Continue number.
         cx.token.push_back(cx.next);
@@ -188,7 +188,7 @@ void parse_number_scientific_signed(ParseContext& cx) {
     }
 }
 
-void parse_number_scientific(ParseContext& cx) {
+void Parse::p_number_scientific(ParseContext& cx) {
     if (cx.next >= '0' && cx.next <= '9') {
         // Continue number.
         cx.token.push_back(cx.next);
@@ -204,7 +204,7 @@ void parse_number_scientific(ParseContext& cx) {
     }
 }
 
-void parse_word(ParseContext& cx) {
+void Parse::p_word(ParseContext& cx) {
     if ((cx.next >= '0' && cx.next <= '9') || (cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
         // Continue word.
         cx.token.push_back(cx.next);
@@ -228,7 +228,7 @@ void parse_word(ParseContext& cx) {
     }
 }
 
-void parse_call_start(ParseContext& cx) {
+void Parse::p_call_start(ParseContext& cx) {
     if ((cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
         // Start word.
         cx.token.push_back(cx.next);
@@ -239,7 +239,7 @@ void parse_call_start(ParseContext& cx) {
     }
 }
 
-void parse_function_name(ParseContext& cx) {
+void Parse::p_function_name(ParseContext& cx) {
     if ((cx.next >= '0' && cx.next <= '9') || (cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
         // Continue function name.
         cx.token.push_back(cx.next);
@@ -251,11 +251,11 @@ void parse_function_name(ParseContext& cx) {
             return;
         }
 
-        Value::ValueId return_type_id = call_function(cx);
+        Value::ValueId return_type_id = Parse::call_function(cx);
         cx.state = (return_type_id == Value::T_ERROR ? ParseContext::EXIT : ParseContext::DEFAULT);
     } else if (cx.next == EOF) {
         // End of file.
-        call_function(cx);
+        Parse::call_function(cx);
         cx.state = ParseContext::EXIT;
     } else {
         // Error.
@@ -263,12 +263,12 @@ void parse_function_name(ParseContext& cx) {
     }
 }
 
-Value::ValueId call_function(ParseContext& cx) {
-    MapType function_map = getFunctionMap();
+Value::ValueId Parse::call_function(ParseContext& cx) {
+    Lib::MapType function_map = Lib::getFunctionMap();
 
     Value::Ptr value;
     if (function_map.count(cx.token) > 0) {
-        FunctionType _callee_ = function_map[cx.token];
+        Lib::FunctionType _callee_ = function_map[cx.token];
         value = _callee_(cx.value_list);
     } else {
         value = Error::from_string("Invalid function \"" + cx.token + "\" called");

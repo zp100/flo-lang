@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "../Bool/Bool.hpp"
 #include "../Value/Value.hpp"
 #include "../../util/BigInt/BigInt.hpp"
 
@@ -21,6 +22,7 @@ class Num : public Value {
     Num mul(const Num) const;
     Num div_nonzero(const Num) const;
     Num mod_nonzero(const Num) const;
+    BigInt::Comp comp(const Num) const;
 
     private:
 

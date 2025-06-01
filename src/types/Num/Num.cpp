@@ -242,6 +242,19 @@ Num Num::mod_nonzero(const Num right) const {
     }
 }
 
+BigInt::Comp Num::comp(const Num right) const {
+    // Shortcuts based on signs.
+    if (sign > right.sign) {
+        return BigInt::GREATER;
+    } else if (sign < right.sign) {
+        return BigInt::LESS;
+    }
+
+    BigInt left_n_scaled = BigInt(numerator).mul(right.denominator);
+    BigInt right_n_scaled = BigInt(denominator).mul(right.numerator);
+    return left_n_scaled.comp(right_n_scaled);
+}
+
 Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {
     type_id = T_NUM;
 }
