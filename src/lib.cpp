@@ -90,7 +90,7 @@ Value::Ptr lib_mod(ParseContext& cx) {
 }
 
 Value::Ptr lib_print(ParseContext& cx) {
-    for (int i = 0; i < cx.value_list.size(); i++) {
+    for (std::size_t i = 0; i < cx.value_list.size(); i++) {
         std::cout << cx.value_list[i]->to_string() << " ";
     };
 

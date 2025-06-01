@@ -22,7 +22,7 @@ BigInt::Comp BigInt::comp(const BigInt& right) const {
         return LESS;
     }
 
-    for (int i = len - 1; i >= 0; i--) {
+    for (long i = len - 1; i >= 0; i--) {
         ResultSigned result = ResultSigned(digits[i]) - ResultSigned(right.digits[i]);
         if (result > 0) {
             return GREATER;
@@ -39,8 +39,8 @@ BigInt& BigInt::add(const Digit d) {
 }
 
 BigInt& BigInt::add(const BigInt& right) {
-    int max_len = (len > right.len ? len : right.len);
-    for (int i = max_len - 1; i >= 0; i--) {
+    long max_len = (len > right.len ? len : right.len);
+    for (long i = max_len - 1; i >= 0; i--) {
         Result result = (i < len ? Result(digits[i]) : 0)
             + (i < right.len ? Result(right.digits[i]) : 0);
         set_carry_loop(result, i);
@@ -55,7 +55,7 @@ BigInt& BigInt::sub_ordered(const Digit d) {
 }
 
 BigInt& BigInt::sub_ordered(const BigInt& right) {
-    for (int i = len - 1; i >= 0; i--) {
+    for (long i = len - 1; i >= 0; i--) {
         ResultSigned result = ResultSigned(digits[i]) - (i < right.len ? ResultSigned(right.digits[i]) : 0);
         set_carry_loop_signed(result, i);
     };
@@ -78,8 +78,8 @@ BigInt& BigInt::mul(const BigInt& right) {
         return *this;
     }
 
-    for (int i = len - 1; i >= 0; i--) {
-        for (int j = right.len - 1; j >= 0; j--) {
+    for (long i = len - 1; i >= 0; i--) {
+        for (long j = right.len - 1; j >= 0; j--) {
             Result result = Result(digits[i]) * Result(right.digits[j]);
             set_carry_loop(result, i + j);
         };
@@ -101,7 +101,7 @@ BigInt& BigInt::mod_nonzero(const BigInt& right) {
 
     std::vector<Digit> copy (digits);
     digits.clear();
-    for (int i = len - 1; i >= 0; i--) {
+    for (long i = len - 1; i >= 0; i--) {
         unshift(copy[i]);
         while (comp(right) != LESS) {
             if (len == 1 && right.len == 1) {
@@ -124,7 +124,7 @@ void BigInt::unshift(const Digit d) {
 
 void BigInt::set_properties() {
     // Remove leading 0s.
-    for (int i = digits.size() - 1; i >= 0 && digits[i] == 0; i--) {
+    for (long i = digits.size() - 1; i >= 0 && digits[i] == 0; i--) {
         digits.pop_back();
     }
 
@@ -132,20 +132,20 @@ void BigInt::set_properties() {
     is_one = comp(1) == EQUAL;
 
     double d = 0.0;
-    for (int i = len - 1; i >= 0; i--) {
+    for (long i = len - 1; i >= 0; i--) {
         d = d * 256.0 + digits[i];
     }
     as_double = d;
 }
 
-void BigInt::set_carry_loop(Result carry, const int start_digit) {
+void BigInt::set_carry_loop(Result carry, const long start_digit) {
     // Clear the start digit.
     if (start_digit < len) {
         digits[start_digit] = 0;
     }
 
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
-    for (int d = start_digit; carry > 0; d++) {
+    for (std::size_t d = start_digit; carry > 0; d++) {
         // Ensure that there's a digit for the current index.
         if (d >= digits.size()) {
             digits.resize(d + 1, 0);
@@ -163,14 +163,14 @@ void BigInt::set_carry_loop(Result carry, const int start_digit) {
     };
 }
 
-void BigInt::set_carry_loop_signed(ResultSigned carry, const int start_digit) {
+void BigInt::set_carry_loop_signed(ResultSigned carry, const long start_digit) {
     // Clear the start digit.
     if (start_digit < len) {
         digits[start_digit] = 0;
     }
 
     // If carry is nonzero, distribute its value into the start "digit" and any carryovers.
-    for (int d = start_digit; carry != 0; d++) {
+    for (std::size_t d = start_digit; carry != 0; d++) {
         // Ensure that there's a digit for the current index.
         if (d >= digits.size()) {
             digits.resize(d + 1, 0);

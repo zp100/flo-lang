@@ -5,7 +5,7 @@ TARGET :=		flo
 SRC_DIR :=		./src/
 BUILD_DIR :=	./build/
 COMP :=			g++
-CPP_FLAGS :=	-std=c++20 -Wall -Wno-sign-compare -Wextra -Wpedantic -Werror
+CPP_FLAGS :=	-std=c++20 -Wall -Wextra -Wpedantic -Werror
 
 # VARIABLES
 SRC_FILES :=	$(shell find ${SRC_DIR} -name '*.cpp')
@@ -16,7 +16,6 @@ INC_FLAGS :=	$(addprefix -I,${INC_DIRS})
 
 # TARGETS
 all: ${BUILD_DIR}/${TARGET}
-	mkdir -p ${BUILD_DIR}
 
 clean:
 	rm -r ${BUILD_DIR}

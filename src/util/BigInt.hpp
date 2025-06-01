@@ -14,7 +14,7 @@ class BigInt {
         EQUAL = 0,
     };
 
-    int len;
+    long len;
     bool is_one;
     double as_double;
 
@@ -41,6 +41,6 @@ class BigInt {
 
     void unshift(const Digit);
     void set_properties();
-    void set_carry_loop(Result, const int);
-    void set_carry_loop_signed(ResultSigned, const int);
+    void set_carry_loop(Result, const long);
+    void set_carry_loop_signed(ResultSigned, const long);
 };

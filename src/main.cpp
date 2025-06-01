@@ -71,7 +71,7 @@ void parse(std::ifstream& source_file) {
     }
 
     std::cout << "---" << std::endl;
-    for (int i = cx.value_list.size() - 1; i >= 0; i--) {
+    for (std::size_t i = 0; i < cx.value_list.size(); i++) {
         std::cout << "[" << i << "] " << cx.value_list[i]->to_string() << std::endl;
     };
 }

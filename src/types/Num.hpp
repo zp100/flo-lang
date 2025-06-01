@@ -11,9 +11,9 @@ class Num : public Value {
     public:
 
     const bool is_int;
-    const int sign;
+    const short sign;
 
-    Num(const int, const BigInt&, const BigInt&);
+    Num(const short, const BigInt&, const BigInt&);
     static Ptr from_string(const std::string);
     std::string to_string() const override;
     Num add(const Num) const;

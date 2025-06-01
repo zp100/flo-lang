@@ -1,17 +1,17 @@
 #include "Num.hpp"
 
-Num::Num(const int s, const BigInt& n, const BigInt& d) : is_int(d.is_one), sign(s), numerator(n), denominator(d) {
+Num::Num(const short s, const BigInt& n, const BigInt& d) : is_int(d.is_one), sign(s), numerator(n), denominator(d) {
     type_id = T_NUM;
 }
 
 // TODO: For now, this function assumes that the given string represents a valid number.
 Value::Ptr Num::from_string(const std::string str) {
-    int new_s = 1;
+    short new_s = 1;
     BigInt new_n (0);
     BigInt new_d (1);
     bool in_decimals = false;
 
-    for (int i = 0; i < str.length(); i++) {
+    for (std::size_t i = 0; i < str.length(); i++) {
         if (str[i] == '-') {
             new_s = -1;
         } else if (str[i] == '.') {
