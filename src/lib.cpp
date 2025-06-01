@@ -6,6 +6,7 @@ MapType getFunctionMap() {
         { "sub", lib_sub },
         { "mul", lib_mul },
         { "div", lib_div },
+        { "mod", lib_mod },
         { "print", lib_print },
         { "println", lib_println },
     };
@@ -69,6 +70,23 @@ Value::Ptr lib_div(ParseContext& cx) {
     }
 
     return std::make_shared<const Num>(num1.div_nonzero(num2));
+}
+
+Value::Ptr lib_mod(ParseContext& cx) {
+    if (cx.value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"mod\"");
+    } else if (cx.value_list[0]->type_id != Value::T_NUM || cx.value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"mod\"");
+    }
+
+    const Num num1 = cast<Num>(cx.value_list[0]);
+    const Num num2 = cast<Num>(cx.value_list[1]);
+
+    if (num2.sign == 0) {
+        return Error::from_string("Division by zero");
+    }
+
+    return std::make_shared<const Num>(num1.mod_nonzero(num2));
 }
 
 Value::Ptr lib_print(ParseContext& cx) {
