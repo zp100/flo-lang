@@ -215,9 +215,30 @@ Num Num::div_nonzero(const Num right) const {
 }
 
 Num Num::mod_nonzero(const Num right) const {
-    // If either number is zero, return zero.
-    if (sign == 0 || right.sign == 0) {
+    // If the dividend is zero, return zero.
+    if (sign == 0) {
         return Num();
+    }
+
+    BigInt left_n_scaled = BigInt(numerator).mul(right.denominator);
+    BigInt right_n_scaled = BigInt(denominator).mul(right.numerator);
+    BigInt d_scaled = BigInt(denominator).mul(right.denominator);
+    if (sign == right.sign) {
+        // Get remainder.
+        // ex: (+7) % (+5) == (+2), or (-7) % (-5) == (-2)
+        return Num(
+            right.sign,
+            left_n_scaled.mod_nonzero(right_n_scaled),
+            d_scaled
+        );
+    } else {
+        // Get remainder, then subtract it from the divisor.
+        // ex: (-7) % (+5) == (+3), or (+7) % (-5) == (-3)
+        return Num(
+            right.sign,
+            right_n_scaled.sub_ordered(left_n_scaled.mod_nonzero(right_n_scaled)),
+            d_scaled
+        );
     }
 }
 
