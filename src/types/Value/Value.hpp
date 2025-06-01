@@ -8,11 +8,12 @@ class Value {
     using Ptr = std::shared_ptr<const Value>;
 
     enum ValueId {
-        T_NULL,
         T_BOOL,
-        T_NUM,
         T_CHAR,
         T_ERROR,
+        T_IDENTIFIER,
+        T_NULL,
+        T_NUM,
     };
 
     ValueId type_id;

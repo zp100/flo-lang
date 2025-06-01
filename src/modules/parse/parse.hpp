@@ -1,5 +1,8 @@
 #pragma once
 #include <fstream>
+#include "../../types/Bool/Bool.hpp"
+#include "../../types/Identifier/Identifier.hpp"
+#include "../../types/Null/Null.hpp"
 #include "../../types/Num/Num.hpp"
 #include "../../types/Value/Value.hpp"
 #include "../../util/ParseContext/ParseContext.hpp"

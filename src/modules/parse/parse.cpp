@@ -39,6 +39,10 @@ std::vector<Value::Ptr> parse(std::ifstream& source_file) {
                 parse_number_scientific(cx);
             break;
 
+            case ParseContext::WORD:
+                parse_word(cx);
+            break;
+
             case ParseContext::CALL_START:
                 parse_call_start(cx);
             break;
@@ -205,21 +209,17 @@ void parse_word(ParseContext& cx) {
         // Continue word.
         cx.token.push_back(cx.next);
     } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
-        // // End word.
-        // Value value (Value::FUNCTION, cx.token);
+        // End word.
+        Value::Ptr value;
+        if (cx.token == "true" || cx.token == "false") {
+            value = Bool::from_string(cx.token);
+        } else if (cx.token == "null") {
+            value = Null::from_string(cx.token);
+        } else {
+            value = Identifier::from_string(cx.token);
+        }
 
-        // if (cx.token == "true") {
-        //     value.type = Value::KEYWORD;
-        //     value.keyword = Value::K_TRUE;
-        // } else if (cx.token == "false") {
-        //     value.type = Value::KEYWORD;
-        //     value.keyword = Value::K_FALSE;
-        // } else if (cx.token == "null") {
-        //     value.type = Value::KEYWORD;
-        //     value.keyword = Value::K_NULL;
-        // }
-
-        // cx.value_list.push_back(value);
+        cx.value_list.push_back(value);
         cx.token.clear();
         cx.state = ParseContext::DEFAULT;
     } else {
