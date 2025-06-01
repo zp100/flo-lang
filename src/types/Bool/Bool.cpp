@@ -17,3 +17,22 @@ Value::Ptr Bool::from_string(const std::string str) {
 std::string Bool::to_string() const {
     return (value == true ? "true" : "false");
 }
+
+Bool Bool::b_not() const {
+    return Bool(!value);
+}
+
+Bool Bool::b_and(const Bool right) const {
+    return Bool(value && right.value);
+}
+
+Bool Bool::b_or(const Bool right) const {
+    return Bool(value || right.value);
+}
+
+Bool Bool::b_xor(const Bool right) const {
+    return Bool(
+        (value || right.value)
+        && !(value && right.value)
+    );
+}

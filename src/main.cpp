@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    std::vector<Value::Ptr> value_list = parse(source_file);
+    ParseContext::ValueList value_list = parse(source_file);
     source_file.close();
 
     std::cout << "---" << std::endl;
