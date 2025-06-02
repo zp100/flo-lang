@@ -11,6 +11,12 @@ Lib::MapType Lib::getFunctionMap() {
         { "and", Lib::l_and },
         { "or", Lib::l_or },
         { "xor", Lib::l_xor },
+        { "lt", Lib::lt },
+        { "lteq", Lib::lteq },
+        { "gt", Lib::gt },
+        { "gteq", Lib::gteq },
+        { "eq", Lib::eq },
+        { "neq", Lib::neq },
         { "print", Lib::print },
         { "println", Lib::println },
     };
@@ -142,6 +148,90 @@ Value::Ptr Lib::l_xor(const ParseContext::ValueList& value_list) {
     const Bool bool2 = Lib::cast<Bool>(value_list[1]);
 
     return std::make_shared<const Bool>(bool1.l_xor(bool2));
+}
+
+Value::Ptr Lib::lt(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"lt\"");
+    } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+    const Num num2 = Lib::cast<Num>(value_list[1]);
+    const BigInt::Comp comp_sign = num1.comp(num2);
+
+    return std::make_shared<const Bool>(comp_sign == BigInt::LESS);
+}
+
+Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"lt\"");
+    } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+    const Num num2 = Lib::cast<Num>(value_list[1]);
+    const BigInt::Comp comp_sign = num1.comp(num2);
+
+    return std::make_shared<const Bool>(comp_sign != BigInt::GREATER);
+}
+
+Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"lt\"");
+    } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+    const Num num2 = Lib::cast<Num>(value_list[1]);
+    const BigInt::Comp comp_sign = num1.comp(num2);
+
+    return std::make_shared<const Bool>(comp_sign == BigInt::GREATER);
+}
+
+Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"lt\"");
+    } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+    const Num num2 = Lib::cast<Num>(value_list[1]);
+    const BigInt::Comp comp_sign = num1.comp(num2);
+
+    return std::make_shared<const Bool>(comp_sign != BigInt::LESS);
+}
+
+Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"lt\"");
+    } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+    const Num num2 = Lib::cast<Num>(value_list[1]);
+    const BigInt::Comp comp_sign = num1.comp(num2);
+
+    return std::make_shared<const Bool>(comp_sign == BigInt::EQUAL);
+}
+
+Value::Ptr Lib::neq(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"lt\"");
+    } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+    const Num num2 = Lib::cast<Num>(value_list[1]);
+    const BigInt::Comp comp_sign = num1.comp(num2);
+
+    return std::make_shared<const Bool>(comp_sign != BigInt::EQUAL);
 }
 
 Value::Ptr Lib::print(const ParseContext::ValueList& value_list) {

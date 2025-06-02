@@ -62,10 +62,9 @@ namespace Lib {
     Value::Ptr l_xor(const ParseContext::ValueList&);
     Value::Ptr l_else(const ParseContext::ValueList&);
 
-    // LOGICAL GROUP (2+)
+    // LOGICAL GROUP (0+)
     Value::Ptr alland(const ParseContext::ValueList&);
     Value::Ptr allor(const ParseContext::ValueList&);
-    Value::Ptr allxor(const ParseContext::ValueList&);
 
     // COMPARISON BINARY
     Value::Ptr lt(const ParseContext::ValueList&);
