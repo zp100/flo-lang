@@ -13,6 +13,8 @@ class Num : public Value {
 
     const bool is_int;
     const short sign;
+    const BigInt numerator;
+    const BigInt denominator;
 
     Num(const short, const BigInt&, const BigInt&);
     static Ptr from_string(const std::string);
@@ -25,9 +27,6 @@ class Num : public Value {
     BigInt::Comp comp(const Num) const;
 
     private:
-
-    const BigInt numerator;
-    const BigInt denominator;
 
     Num(); // zero
 };
