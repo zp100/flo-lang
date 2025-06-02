@@ -166,9 +166,9 @@ Value::Ptr Lib::lt(const ParseContext::ValueList& value_list) {
 
 Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
-        return Error::from_string("Invalid argument count for function \"lt\"");
+        return Error::from_string("Invalid argument count for function \"lteq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+        return Error::from_string("Invalid argument type(s) for function \"lteq\"");
     }
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
@@ -180,9 +180,9 @@ Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
 
 Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
-        return Error::from_string("Invalid argument count for function \"lt\"");
+        return Error::from_string("Invalid argument count for function \"gt\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+        return Error::from_string("Invalid argument type(s) for function \"gt\"");
     }
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
@@ -194,9 +194,9 @@ Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
 
 Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
-        return Error::from_string("Invalid argument count for function \"lt\"");
+        return Error::from_string("Invalid argument count for function \"gteq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+        return Error::from_string("Invalid argument type(s) for function \"gteq\"");
     }
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
@@ -208,9 +208,9 @@ Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
 
 Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
-        return Error::from_string("Invalid argument count for function \"lt\"");
+        return Error::from_string("Invalid argument count for function \"eq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+        return Error::from_string("Invalid argument type(s) for function \"eq\"");
     }
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
@@ -222,9 +222,9 @@ Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
 
 Value::Ptr Lib::neq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
-        return Error::from_string("Invalid argument count for function \"lt\"");
+        return Error::from_string("Invalid argument count for function \"neq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"lt\"");
+        return Error::from_string("Invalid argument type(s) for function \"neq\"");
     }
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
