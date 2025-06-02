@@ -24,7 +24,6 @@ class Num : public Value {
     Num mul(const Num) const;
     Num div_nonzero(const Num) const;
     Num mod_nonzero(const Num) const;
-    Num round_toward_zero() const;
     BigInt::Comp comp(const Num) const;
 
     private:

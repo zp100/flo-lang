@@ -4,6 +4,9 @@ Lib::MapType Lib::getFunctionMap() {
     return {
         { "neg", Lib::neg },
         { "abs", Lib::abs },
+        { "floor", Lib::floor },
+        { "ceil", Lib::ceil },
+        { "round", Lib::round },
         { "add", Lib::add },
         { "sub", Lib::sub },
         { "mul", Lib::mul },
@@ -53,6 +56,45 @@ Value::Ptr Lib::abs(const ParseContext::ValueList& value_list) {
     const Num num1 = Lib::cast<Num>(value_list[0]);
 
     const Num result ((num1.sign ? 1 : 0), num1.numerator, num1.denominator);
+    return std::make_shared<const Num>(result);
+}
+
+Value::Ptr Lib::floor(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"floor\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"floor\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    // ...
+    return std::make_shared<const Num>(result);
+}
+
+Value::Ptr Lib::ceil(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"ceil\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"ceil\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    // ...
+    return std::make_shared<const Num>(result);
+}
+
+Value::Ptr Lib::round(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"round\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"round\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    // ...
     return std::make_shared<const Num>(result);
 }
 

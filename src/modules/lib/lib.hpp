@@ -31,9 +31,9 @@ namespace Lib {
     // MATH UNARY
     Value::Ptr neg(const ParseContext::ValueList&);
     Value::Ptr abs(const ParseContext::ValueList&);
-    Value::Ptr round(const ParseContext::ValueList&);
     Value::Ptr floor(const ParseContext::ValueList&);
     Value::Ptr ceil(const ParseContext::ValueList&);
+    Value::Ptr round(const ParseContext::ValueList&);
 
     // MATH BINARY
     Value::Ptr add(const ParseContext::ValueList&);
@@ -82,6 +82,10 @@ namespace Lib {
 
     // COMPARISON TERNARY
     Value::Ptr between(const ParseContext::ValueList&);
+
+    // COMPARISON GROUP (0+)
+    Value::Ptr alleq(const ParseContext::ValueList&);
+    Value::Ptr allneq(const ParseContext::ValueList&);
 
     // GROUPS
     Value::Ptr size(const ParseContext::ValueList&);

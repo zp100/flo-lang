@@ -242,19 +242,6 @@ Num Num::mod_nonzero(const Num right) const {
     }
 }
 
-Num Num::round_toward_zero() const {
-    // If this is already an integer, return it.
-    if (is_int) {
-        return *this;
-    }
-
-    return Num(
-        sign,
-        BigInt(numerator).int_div_nonzero(denominator),
-        1
-    );
-}
-
 BigInt::Comp Num::comp(const Num right) const {
     // Shortcuts based on signs.
     if (sign > right.sign) {
