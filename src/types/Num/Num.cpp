@@ -116,7 +116,7 @@ Num Num::add(const Num right) const {
 }
 
 Num Num::sub(const Num right) const {
-    // If the sub is zero, return this.
+    // If the right number is zero, return the left number.
     // ex: (+8) - (0) == (+8), or (-8) - (0) == (-8)
     if (right.sign == 0) {
         return *this;
@@ -240,6 +240,19 @@ Num Num::mod_nonzero(const Num right) const {
             d_scaled
         );
     }
+}
+
+Num Num::round_toward_zero() const {
+    // If this is already an integer, return it.
+    if (is_int) {
+        return *this;
+    }
+
+    return Num(
+        sign,
+        BigInt(numerator).int_div_nonzero(denominator),
+        1
+    );
 }
 
 BigInt::Comp Num::comp(const Num right) const {

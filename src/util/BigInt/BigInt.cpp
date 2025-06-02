@@ -89,6 +89,36 @@ BigInt& BigInt::mul(const BigInt& right) {
     return *this;
 }
 
+BigInt& BigInt::int_div_nonzero(const Digit d) {
+    return int_div_nonzero(BigInt(d));
+}
+
+BigInt& BigInt::int_div_nonzero(const BigInt& right) {
+    // Shortcut if LHS is zero.
+    if (len == 0) {
+        return *this;
+    }
+
+    BigInt remainder (0);
+    for (long i = len - 1; i >= 0; i--) {
+        remainder.unshift(digits[i]);
+        Digit count = 0;
+        while (remainder.comp(right) != LESS) {
+            if (remainder.len == 1 && right.len == 1) {
+                count += (remainder.digits[0] / right.digits[0]);
+                break;
+            }
+
+            remainder.sub_ordered(right);
+            count++;
+        }
+        digits[i] = count;
+    }
+
+    set_properties();
+    return *this;
+}
+
 BigInt& BigInt::mod_nonzero(const Digit d) {
     return mod_nonzero(BigInt(d));
 }
