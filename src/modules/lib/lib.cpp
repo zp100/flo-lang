@@ -2,6 +2,8 @@
 
 Lib::MapType Lib::getFunctionMap() {
     return {
+        { "neg", Lib::neg },
+        { "abs", Lib::abs },
         { "add", Lib::add },
         { "sub", Lib::sub },
         { "mul", Lib::mul },
@@ -11,6 +13,8 @@ Lib::MapType Lib::getFunctionMap() {
         { "and", Lib::l_and },
         { "or", Lib::l_or },
         { "xor", Lib::l_xor },
+        { "nand", Lib::l_nand },
+        { "nor", Lib::l_nor },
         { "lt", Lib::lt },
         { "lteq", Lib::lteq },
         { "gt", Lib::gt },
@@ -26,6 +30,32 @@ template <typename T> T Lib::cast(Value::Ptr value) {
     return *dynamic_cast<const T* const>(value.get());
 }
 
+Value::Ptr Lib::neg(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"neg\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"neg\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    const Num result (num1.sign * -1, num1.numerator, num1.denominator);
+    return std::make_shared<const Num>(result);
+}
+
+Value::Ptr Lib::abs(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"abs\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"abs\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    const Num result ((num1.sign ? 1 : 0), num1.numerator, num1.denominator);
+    return std::make_shared<const Num>(result);
+}
+
 Value::Ptr Lib::add(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"add\"");
@@ -36,7 +66,8 @@ Value::Ptr Lib::add(const ParseContext::ValueList& value_list) {
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
 
-    return std::make_shared<const Num>(num1.add(num2));
+    const Num result = num1.add(num2);
+    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::sub(const ParseContext::ValueList& value_list) {
@@ -49,7 +80,8 @@ Value::Ptr Lib::sub(const ParseContext::ValueList& value_list) {
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
 
-    return std::make_shared<const Num>(num1.sub(num2));
+    const Num result = num1.sub(num2);
+    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::mul(const ParseContext::ValueList& value_list) {
@@ -62,7 +94,8 @@ Value::Ptr Lib::mul(const ParseContext::ValueList& value_list) {
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
 
-    return std::make_shared<const Num>(num1.mul(num2));
+    const Num result = num1.mul(num2);
+    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::div(const ParseContext::ValueList& value_list) {
@@ -79,7 +112,8 @@ Value::Ptr Lib::div(const ParseContext::ValueList& value_list) {
         return Error::from_string("Division by zero");
     }
 
-    return std::make_shared<const Num>(num1.div_nonzero(num2));
+    const Num result = num1.div_nonzero(num2);
+    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::mod(const ParseContext::ValueList& value_list) {
@@ -96,7 +130,8 @@ Value::Ptr Lib::mod(const ParseContext::ValueList& value_list) {
         return Error::from_string("Division by zero");
     }
 
-    return std::make_shared<const Num>(num1.mod_nonzero(num2));
+    const Num result = num1.mod_nonzero(num2);
+    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::l_not(const ParseContext::ValueList& value_list) {
@@ -108,7 +143,8 @@ Value::Ptr Lib::l_not(const ParseContext::ValueList& value_list) {
 
     const Bool bool1 = Lib::cast<Bool>(value_list[0]);
 
-    return std::make_shared<const Bool>(bool1.l_not());
+    const Bool result (!bool1.value);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::l_and(const ParseContext::ValueList& value_list) {
@@ -121,7 +157,8 @@ Value::Ptr Lib::l_and(const ParseContext::ValueList& value_list) {
     const Bool bool1 = Lib::cast<Bool>(value_list[0]);
     const Bool bool2 = Lib::cast<Bool>(value_list[1]);
 
-    return std::make_shared<const Bool>(bool1.l_and(bool2));
+    const Bool result (bool1.value && bool2.value);
+    return std::make_shared<const Bool>(bool1.value && bool2.value);
 }
 
 Value::Ptr Lib::l_or(const ParseContext::ValueList& value_list) {
@@ -134,7 +171,8 @@ Value::Ptr Lib::l_or(const ParseContext::ValueList& value_list) {
     const Bool bool1 = Lib::cast<Bool>(value_list[0]);
     const Bool bool2 = Lib::cast<Bool>(value_list[1]);
 
-    return std::make_shared<const Bool>(bool1.l_or(bool2));
+    const Bool result (bool1.value || bool2.value);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::l_xor(const ParseContext::ValueList& value_list) {
@@ -147,7 +185,36 @@ Value::Ptr Lib::l_xor(const ParseContext::ValueList& value_list) {
     const Bool bool1 = Lib::cast<Bool>(value_list[0]);
     const Bool bool2 = Lib::cast<Bool>(value_list[1]);
 
-    return std::make_shared<const Bool>(bool1.l_xor(bool2));
+    const Bool result ((bool1.value || bool2.value) && !(bool1.value && bool2.value));
+    return std::make_shared<const Bool>(result);
+}
+
+Value::Ptr Lib::l_nand(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"nand\"");
+    } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
+        return Error::from_string("Invalid argument type(s) for function \"nand\"");
+    }
+
+    const Bool bool1 = Lib::cast<Bool>(value_list[0]);
+    const Bool bool2 = Lib::cast<Bool>(value_list[1]);
+
+    const Bool result (!(bool1.value && bool2.value));
+    return std::make_shared<const Bool>(result);
+}
+
+Value::Ptr Lib::l_nor(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 2) {
+        return Error::from_string("Invalid argument count for function \"nor\"");
+    } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
+        return Error::from_string("Invalid argument type(s) for function \"nor\"");
+    }
+
+    const Bool bool1 = Lib::cast<Bool>(value_list[0]);
+    const Bool bool2 = Lib::cast<Bool>(value_list[1]);
+
+    const Bool result (!(bool1.value || bool2.value));
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::lt(const ParseContext::ValueList& value_list) {
@@ -159,9 +226,9 @@ Value::Ptr Lib::lt(const ParseContext::ValueList& value_list) {
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
-    const BigInt::Comp comp_sign = num1.comp(num2);
 
-    return std::make_shared<const Bool>(comp_sign == BigInt::LESS);
+    const Bool result (num1.comp(num2) == BigInt::LESS);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
@@ -173,9 +240,9 @@ Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
-    const BigInt::Comp comp_sign = num1.comp(num2);
 
-    return std::make_shared<const Bool>(comp_sign != BigInt::GREATER);
+    const Bool result (num1.comp(num2) != BigInt::GREATER);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
@@ -187,9 +254,9 @@ Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
-    const BigInt::Comp comp_sign = num1.comp(num2);
 
-    return std::make_shared<const Bool>(comp_sign == BigInt::GREATER);
+    const Bool result (num1.comp(num2) == BigInt::GREATER);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
@@ -201,9 +268,9 @@ Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
-    const BigInt::Comp comp_sign = num1.comp(num2);
 
-    return std::make_shared<const Bool>(comp_sign != BigInt::LESS);
+    const Bool result (num1.comp(num2) != BigInt::LESS);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
@@ -215,9 +282,9 @@ Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
-    const BigInt::Comp comp_sign = num1.comp(num2);
 
-    return std::make_shared<const Bool>(comp_sign == BigInt::EQUAL);
+    const Bool result (num1.comp(num2) == BigInt::EQUAL);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::neq(const ParseContext::ValueList& value_list) {
@@ -229,9 +296,9 @@ Value::Ptr Lib::neq(const ParseContext::ValueList& value_list) {
 
     const Num num1 = Lib::cast<Num>(value_list[0]);
     const Num num2 = Lib::cast<Num>(value_list[1]);
-    const BigInt::Comp comp_sign = num1.comp(num2);
 
-    return std::make_shared<const Bool>(comp_sign != BigInt::EQUAL);
+    const Bool result (num1.comp(num2) != BigInt::EQUAL);
+    return std::make_shared<const Bool>(result);
 }
 
 Value::Ptr Lib::print(const ParseContext::ValueList& value_list) {
