@@ -7,6 +7,25 @@ BigInt::BigInt(const Digit d) {
     set_properties();
 }
 
+void BigInt::simplify_recursive(BigInt& a, BigInt& b) {
+    switch (a.comp(b)) {
+        case GREATER:
+            a.sub_ordered(b);
+            simplify_recursive(a, b);
+            a.add(1);
+            break;
+
+        case LESS:
+            b.sub_ordered(a);
+            simplify_recursive(a, b);
+            b.add(1);
+            break;
+
+        default:
+            a = b = BigInt(1);
+    }
+}
+
 BigInt::Comp BigInt::comp(const BigInt::Digit d) const {
     switch (len) {
         case 0: return (d == 0 ? EQUAL : LESS);
@@ -133,7 +152,7 @@ void BigInt::set_properties() {
 
     double d = 0.0;
     for (long i = len - 1; i >= 0; i--) {
-        d = d * 256.0 + digits[i];
+        d = d * DIGIT_SIZE_FACTOR + digits[i];
     }
     as_double = d;
 }

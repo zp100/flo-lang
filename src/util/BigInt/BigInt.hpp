@@ -19,6 +19,7 @@ class BigInt {
     double as_double;
 
     BigInt(const Digit);
+    static void simplify_recursive(BigInt&, BigInt&);
     Comp comp(const Digit) const;
     Comp comp(const BigInt&) const;
     BigInt& add(const Digit);

@@ -62,7 +62,7 @@ Num Num::add(const Num right) const {
                 sign,
                 BigInt(numerator).mul(2),
                 denominator
-            );
+            ).maybe_simplify();
         } else {
             // Equal magnitudes but opposite signs: Zero.
             // ex: (+6) + (-6) == (0), or (-6) + (+6) == (0)
@@ -78,7 +78,7 @@ Num Num::add(const Num right) const {
             1,
             left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else if (sign == 1 && right.sign == -1 && comp_sign == BigInt::LESS) {
         // Subtract reversed, then negate the result.
         // ex: (+5) + (-7) == (-2)
@@ -86,7 +86,7 @@ Num Num::add(const Num right) const {
             -1,
             right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else if (sign == -1 && right.sign == 1 && comp_sign == BigInt::GREATER) {
         // Subtract, then negate the result.
         // ex: (-7) + (+5) == (-2)
@@ -94,7 +94,7 @@ Num Num::add(const Num right) const {
             -1,
             left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else if (sign == -1 && right.sign == 1 && comp_sign == BigInt::LESS) {
         // Subtract reversed.
         // ex: (-5) + (+7) == (+2)
@@ -102,7 +102,7 @@ Num Num::add(const Num right) const {
             1,
             right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else {
         // Add.
         // ex: (+7) + (+5) == (+12), or (-7) + (-5) == (-12)
@@ -111,7 +111,7 @@ Num Num::add(const Num right) const {
             sign,
             left_n_scaled.add(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     }
 }
 
@@ -137,7 +137,7 @@ Num Num::sub(const Num right) const {
                 sign,
                 BigInt(numerator).mul(2),
                 denominator
-            );
+            ).maybe_simplify();
         }
     }
 
@@ -149,7 +149,7 @@ Num Num::sub(const Num right) const {
             1,
             left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else if (sign == 1 && right.sign == 1 && comp_sign == BigInt::LESS) {
         // Subtract reversed, then negate the result.
         // ex: (+5) - (+7) == (-2)
@@ -157,7 +157,7 @@ Num Num::sub(const Num right) const {
             -1,
             right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else if (sign == -1 && right.sign == -1 && comp_sign == BigInt::GREATER) {
         // Subtract, then negate the result.
         // ex: (-7) - (-5) == (-2)
@@ -165,7 +165,7 @@ Num Num::sub(const Num right) const {
             -1,
             left_n_scaled.sub_ordered(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else if (sign == -1 && right.sign == -1 && comp_sign == BigInt::LESS) {
         // Subtract reversed.
         // ex: (-5) - (-7) == (+2)
@@ -173,7 +173,7 @@ Num Num::sub(const Num right) const {
             1,
             right_n_scaled.sub_ordered(left_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else {
         // Add.
         // ex: (+7) - (-5) == (+12), or (-7) - (+5) == (-12)
@@ -182,7 +182,7 @@ Num Num::sub(const Num right) const {
             sign,
             left_n_scaled.add(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     }
 }
 
@@ -197,7 +197,7 @@ Num Num::mul(const Num right) const {
         sign * right.sign,
         BigInt(numerator).mul(right.numerator),
         BigInt(denominator).mul(right.denominator)
-    );
+    ).maybe_simplify();
 }
 
 Num Num::div_nonzero(const Num right) const {
@@ -211,7 +211,7 @@ Num Num::div_nonzero(const Num right) const {
         sign * right.sign,
         BigInt(numerator).mul(right.denominator),
         BigInt(denominator).mul(right.numerator)
-    );
+    ).maybe_simplify();
 }
 
 Num Num::mod_nonzero(const Num right) const {
@@ -230,7 +230,7 @@ Num Num::mod_nonzero(const Num right) const {
             right.sign,
             left_n_scaled.mod_nonzero(right_n_scaled),
             d_scaled
-        );
+        ).maybe_simplify();
     } else {
         // Get remainder, then subtract it from the divisor.
         // ex: (-7) % (+5) == (+3), or (+7) % (-5) == (-3)
@@ -238,7 +238,7 @@ Num Num::mod_nonzero(const Num right) const {
             right.sign,
             right_n_scaled.sub_ordered(left_n_scaled.mod_nonzero(right_n_scaled)),
             d_scaled
-        );
+        ).maybe_simplify();
     }
 }
 
@@ -257,4 +257,15 @@ BigInt::Comp Num::comp(const Num right) const {
 
 Num::Num() : is_int(true), sign(0), numerator(0), denominator(1) {
     type_id = T_NUM;
+}
+
+Num Num::maybe_simplify() const {
+    if (denominator.is_one) {
+        return *this;
+    }
+
+    BigInt new_n (numerator);
+    BigInt new_d (denominator);
+    BigInt::simplify_recursive(new_n, new_d);
+    return Num(sign, new_n, new_d);
 }

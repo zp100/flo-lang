@@ -29,4 +29,5 @@ class Num : public Value {
     private:
 
     Num(); // zero
+    Num maybe_simplify() const;
 };
