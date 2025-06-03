@@ -145,6 +145,8 @@ namespace Lib {
     // formatting functions...
 
     // MISC
+    Value::Ptr f_exists(const ParseContext::ValueList&);
+    Value::Ptr f_nil(const ParseContext::ValueList&);
     Value::Ptr f_call(const ParseContext::ValueList&);
     Value::Ptr f_spread(const ParseContext::ValueList&);
     Value::Ptr f_range(const ParseContext::ValueList&);

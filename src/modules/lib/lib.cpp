@@ -24,6 +24,8 @@ Lib::MapType Lib::getFunctionMap() {
         { "nor", Lib::f_nor },
         { "print", Lib::f_print },
         { "println", Lib::f_println },
+        { "exists", Lib::f_exists },
+        { "nil", Lib::f_nil },
     };
 }
 
@@ -336,4 +338,22 @@ Value::Ptr Lib::f_println(const ParseContext::ValueList& value_list) {
 
     std::cout << std::endl;
     return value;
+}
+
+Value::Ptr Lib::f_exists(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"exists\"");
+    }
+
+    const Bool result (value_list[0]->type_id != Value::T_NULL);
+    return std::make_shared<const Bool>(result);
+}
+
+Value::Ptr Lib::f_nil(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"nil\"");
+    }
+
+    const Bool result (value_list[0]->type_id == Value::T_NULL);
+    return std::make_shared<const Bool>(result);
 }
