@@ -12,13 +12,13 @@ void BigInt::simplify_recursive(BigInt& a, BigInt& b) {
         case GREATER:
             a.sub_ordered(b);
             simplify_recursive(a, b);
-            a.add(1);
+            a.add(b);
             break;
 
         case LESS:
             b.sub_ordered(a);
             simplify_recursive(a, b);
-            b.add(1);
+            b.add(a);
             break;
 
         default:
