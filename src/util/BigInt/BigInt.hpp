@@ -40,6 +40,7 @@ class BigInt {
 
     std::vector<Digit> digits;
 
+    BigInt& div_mod(const BigInt&, BigInt&);
     void unshift(const Digit);
     void set_properties();
     void set_carry_loop(Result, const long);

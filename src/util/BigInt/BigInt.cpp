@@ -8,21 +8,22 @@ BigInt::BigInt(const Digit d) {
 }
 
 void BigInt::simplify_recursive(BigInt& a, BigInt& b) {
-    switch (a.comp(b)) {
-        case GREATER:
-            a.sub_ordered(b);
-            simplify_recursive(a, b);
-            a.add(b);
-            break;
+    std::vector<BigInt> scale_stack;
+    while (b.comp(0) != EQUAL) {
+        BigInt remainder (0);
+        a.div_mod(b, remainder);
+        scale_stack.push_back(a);
+        a = b;
+        b = remainder;
+    }
 
-        case LESS:
-            b.sub_ordered(a);
-            simplify_recursive(a, b);
-            b.add(a);
-            break;
+    a = 1;
 
-        default:
-            a = b = BigInt(1);
+    while (scale_stack.size() > 0) {
+        scale_stack.back().mul(a).add(b);
+        b = a;
+        a = scale_stack.back();
+        scale_stack.pop_back();
     }
 }
 
@@ -133,6 +134,29 @@ BigInt& BigInt::mod_nonzero(const BigInt& right) {
     }
 
     set_properties();
+    return *this;
+}
+
+BigInt& BigInt::div_mod(const BigInt& right, BigInt& start_zero) {
+    std::vector<Digit> digits_copy (digits);
+    digits.clear();
+
+    for (long i = len - 1; i >= 0; i--) {
+        Digit count = 0;
+        start_zero.unshift(digits_copy[i]);
+        while (start_zero.comp(right) != LESS) {
+            if (start_zero.len == 1 && right.len == 1) {
+                count += start_zero.digits[0] / right.digits[0];
+                start_zero.digits[0] %= right.digits[0];
+                break;
+            }
+
+            count++;
+            start_zero.sub_ordered(right);
+        }
+        unshift(count);
+    }
+
     return *this;
 }
 
