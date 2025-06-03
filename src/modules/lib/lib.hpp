@@ -22,8 +22,6 @@ namespace Lib {
     Value::Ptr f_add(const ParseContext::ValueList&);
     Value::Ptr f_sub(const ParseContext::ValueList&);
     Value::Ptr f_mul(const ParseContext::ValueList&);
-    Value::Ptr f_div(const ParseContext::ValueList&);
-    Value::Ptr f_mod(const ParseContext::ValueList&);
     Value::Ptr f_exp(const ParseContext::ValueList&);
     Value::Ptr f_lt(const ParseContext::ValueList&);
     Value::Ptr f_lteq(const ParseContext::ValueList&);
@@ -31,6 +29,10 @@ namespace Lib {
     Value::Ptr f_gteq(const ParseContext::ValueList&);
     Value::Ptr f_eq(const ParseContext::ValueList&);
     Value::Ptr f_neq(const ParseContext::ValueList&);
+
+    // OPERATORS (nullable)
+    Value::Ptr f_div(const ParseContext::ValueList&);
+    Value::Ptr f_mod(const ParseContext::ValueList&);
 
     // TYPE UNARY
     Value::Ptr f_Bool(const ParseContext::ValueList&);
@@ -49,14 +51,14 @@ namespace Lib {
     Value::Ptr f_ceil(const ParseContext::ValueList&);
     Value::Ptr f_round(const ParseContext::ValueList&);
 
-    // MATH BINARY
+    // MATH BINARY (nullable)
     Value::Ptr f_divmod(const ParseContext::ValueList&);
 
-    // MATH GROUP (0+)
+    // MATH GROUP
     Value::Ptr f_sum(const ParseContext::ValueList&);
     Value::Ptr f_prod(const ParseContext::ValueList&);
 
-    // MATH GROUP (1+)
+    // MATH GROUP (nullable)
     Value::Ptr f_min(const ParseContext::ValueList&);
     Value::Ptr f_max(const ParseContext::ValueList&);
     Value::Ptr f_avg(const ParseContext::ValueList&);
@@ -68,7 +70,7 @@ namespace Lib {
     // COMPARISON TERNARY
     Value::Ptr f_between(const ParseContext::ValueList&);
 
-    // COMPARISON GROUP (0+)
+    // COMPARISON GROUP
     Value::Ptr f_alleq(const ParseContext::ValueList&);
     Value::Ptr f_allneq(const ParseContext::ValueList&);
 
@@ -83,7 +85,7 @@ namespace Lib {
     Value::Ptr f_nor(const ParseContext::ValueList&);
     Value::Ptr f_else(const ParseContext::ValueList&);
 
-    // LOGICAL GROUP (0+)
+    // LOGICAL GROUP
     Value::Ptr f_alland(const ParseContext::ValueList&);
     Value::Ptr f_allor(const ParseContext::ValueList&);
     Value::Ptr f_allnand(const ParseContext::ValueList&);
