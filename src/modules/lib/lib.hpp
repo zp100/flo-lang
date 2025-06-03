@@ -41,8 +41,8 @@ namespace Lib {
     Value::Ptr f_mul(const ParseContext::ValueList&);
     Value::Ptr f_div(const ParseContext::ValueList&);
     Value::Ptr f_mod(const ParseContext::ValueList&);
-    Value::Ptr f_divmod(const ParseContext::ValueList&);
     Value::Ptr f_exp(const ParseContext::ValueList&);
+    Value::Ptr f_divmod(const ParseContext::ValueList&);
 
     // MATH GROUP (0+)
     Value::Ptr f_sum(const ParseContext::ValueList&);
@@ -52,23 +52,6 @@ namespace Lib {
     Value::Ptr f_min(const ParseContext::ValueList&);
     Value::Ptr f_max(const ParseContext::ValueList&);
     Value::Ptr f_avg(const ParseContext::ValueList&);
-
-    // LOGICAL UNARY
-    Value::Ptr f_not(const ParseContext::ValueList&);
-
-    // LOGICAL BINARY
-    Value::Ptr f_and(const ParseContext::ValueList&);
-    Value::Ptr f_or(const ParseContext::ValueList&);
-    Value::Ptr f_xor(const ParseContext::ValueList&);
-    Value::Ptr f_nand(const ParseContext::ValueList&);
-    Value::Ptr f_nor(const ParseContext::ValueList&);
-    Value::Ptr f_else(const ParseContext::ValueList&);
-
-    // LOGICAL GROUP (0+)
-    Value::Ptr f_alland(const ParseContext::ValueList&);
-    Value::Ptr f_allor(const ParseContext::ValueList&);
-    Value::Ptr f_allnand(const ParseContext::ValueList&);
-    Value::Ptr f_allnor(const ParseContext::ValueList&);
 
     // COMPARISON BINARY
     Value::Ptr f_lt(const ParseContext::ValueList&);
@@ -86,6 +69,23 @@ namespace Lib {
     // COMPARISON GROUP (0+)
     Value::Ptr f_alleq(const ParseContext::ValueList&);
     Value::Ptr f_allneq(const ParseContext::ValueList&);
+
+    // LOGICAL UNARY
+    Value::Ptr f_not(const ParseContext::ValueList&);
+
+    // LOGICAL BINARY
+    Value::Ptr f_and(const ParseContext::ValueList&);
+    Value::Ptr f_or(const ParseContext::ValueList&);
+    Value::Ptr f_xor(const ParseContext::ValueList&);
+    Value::Ptr f_nand(const ParseContext::ValueList&);
+    Value::Ptr f_nor(const ParseContext::ValueList&);
+    Value::Ptr f_else(const ParseContext::ValueList&);
+
+    // LOGICAL GROUP (0+)
+    Value::Ptr f_alland(const ParseContext::ValueList&);
+    Value::Ptr f_allor(const ParseContext::ValueList&);
+    Value::Ptr f_allnand(const ParseContext::ValueList&);
+    Value::Ptr f_allnor(const ParseContext::ValueList&);
 
     // GROUPS
     Value::Ptr f_size(const ParseContext::ValueList&);
