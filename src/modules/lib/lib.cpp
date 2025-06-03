@@ -2,27 +2,27 @@
 
 Lib::MapType Lib::getFunctionMap() {
     return {
-        { "neg", Lib::neg },
-        { "abs", Lib::abs },
-        { "add", Lib::add },
-        { "sub", Lib::sub },
-        { "mul", Lib::mul },
-        { "div", Lib::div },
-        { "mod", Lib::mod },
-        { "not", Lib::l_not },
-        { "and", Lib::l_and },
-        { "or", Lib::l_or },
-        { "xor", Lib::l_xor },
-        { "nand", Lib::l_nand },
-        { "nor", Lib::l_nor },
-        { "lt", Lib::lt },
-        { "lteq", Lib::lteq },
-        { "gt", Lib::gt },
-        { "gteq", Lib::gteq },
-        { "eq", Lib::eq },
-        { "neq", Lib::neq },
-        { "print", Lib::print },
-        { "println", Lib::println },
+        { "neg", Lib::f_neg },
+        { "abs", Lib::f_abs },
+        { "+", Lib::f_add },
+        { "-", Lib::f_sub },
+        { "*", Lib::f_mul },
+        { "/", Lib::f_div },
+        { "%", Lib::f_mod },
+        { "not", Lib::f_not },
+        { "and", Lib::f_and },
+        { "or", Lib::f_or },
+        { "xor", Lib::f_xor },
+        { "nand", Lib::f_nand },
+        { "nor", Lib::f_nor },
+        { "<", Lib::f_lt },
+        { "<=", Lib::f_lteq },
+        { ">", Lib::f_gt },
+        { ">=", Lib::f_gteq },
+        { "==", Lib::f_eq },
+        { "!=", Lib::f_neq },
+        { "print", Lib::f_print },
+        { "println", Lib::f_println },
     };
 }
 
@@ -30,7 +30,7 @@ template <typename T> T Lib::cast(Value::Ptr value) {
     return *dynamic_cast<const T* const>(value.get());
 }
 
-Value::Ptr Lib::neg(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_neg(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 1) {
         return Error::from_string("Invalid argument count for function \"neg\"");
     } else if (value_list[0]->type_id != Value::T_NUM) {
@@ -43,7 +43,7 @@ Value::Ptr Lib::neg(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::abs(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_abs(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 1) {
         return Error::from_string("Invalid argument count for function \"abs\"");
     } else if (value_list[0]->type_id != Value::T_NUM) {
@@ -56,7 +56,7 @@ Value::Ptr Lib::abs(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::add(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_add(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"add\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -70,7 +70,7 @@ Value::Ptr Lib::add(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::sub(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_sub(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"sub\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -84,7 +84,7 @@ Value::Ptr Lib::sub(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::mul(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_mul(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"mul\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -98,7 +98,7 @@ Value::Ptr Lib::mul(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::div(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_div(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"div\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -116,7 +116,7 @@ Value::Ptr Lib::div(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::mod(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_mod(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"mod\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -134,7 +134,7 @@ Value::Ptr Lib::mod(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Num>(result);
 }
 
-Value::Ptr Lib::l_not(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_not(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 1) {
         return Error::from_string("Invalid argument count for function \"not\"");
     } else if (value_list[0]->type_id != Value::T_BOOL) {
@@ -147,7 +147,7 @@ Value::Ptr Lib::l_not(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::l_and(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_and(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"and\"");
     } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
@@ -161,7 +161,7 @@ Value::Ptr Lib::l_and(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(bool1.value && bool2.value);
 }
 
-Value::Ptr Lib::l_or(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_or(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"or\"");
     } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
@@ -175,7 +175,7 @@ Value::Ptr Lib::l_or(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::l_xor(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_xor(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"xor\"");
     } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
@@ -189,7 +189,7 @@ Value::Ptr Lib::l_xor(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::l_nand(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_nand(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"nand\"");
     } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
@@ -203,7 +203,7 @@ Value::Ptr Lib::l_nand(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::l_nor(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_nor(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"nor\"");
     } else if (value_list[0]->type_id != Value::T_BOOL || value_list[1]->type_id != Value::T_BOOL) {
@@ -217,7 +217,7 @@ Value::Ptr Lib::l_nor(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::lt(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_lt(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"lt\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -231,7 +231,7 @@ Value::Ptr Lib::lt(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_lteq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"lteq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -245,7 +245,7 @@ Value::Ptr Lib::lteq(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_gt(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"gt\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -259,7 +259,7 @@ Value::Ptr Lib::gt(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_gteq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"gteq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -273,7 +273,7 @@ Value::Ptr Lib::gteq(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_eq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"eq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -287,7 +287,7 @@ Value::Ptr Lib::eq(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::neq(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_neq(const ParseContext::ValueList& value_list) {
     if (value_list.size() != 2) {
         return Error::from_string("Invalid argument count for function \"neq\"");
     } else if (value_list[0]->type_id != Value::T_NUM || value_list[1]->type_id != Value::T_NUM) {
@@ -301,7 +301,7 @@ Value::Ptr Lib::neq(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Bool>(result);
 }
 
-Value::Ptr Lib::print(const ParseContext::ValueList& value_list) {
+Value::Ptr Lib::f_print(const ParseContext::ValueList& value_list) {
     for (std::size_t i = 0; i < value_list.size(); i++) {
         std::cout << value_list[i]->to_string() << " ";
     };
@@ -309,8 +309,8 @@ Value::Ptr Lib::print(const ParseContext::ValueList& value_list) {
     return std::make_shared<const Null>();
 }
 
-Value::Ptr Lib::println(const ParseContext::ValueList& value_list) {
-    Value::Ptr value = Lib::print(value_list);
+Value::Ptr Lib::f_println(const ParseContext::ValueList& value_list) {
+    Value::Ptr value = Lib::f_print(value_list);
     if (value->type_id == Value::T_ERROR) {
         return value;
     }

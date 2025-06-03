@@ -229,21 +229,18 @@ void Parse::p_word(ParseContext& cx) {
 }
 
 void Parse::p_call_start(ParseContext& cx) {
-    if ((cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
+    if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
+        // Error.
+        cx.state = ParseContext::EXIT;
+    } else {
         // Start word.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::FUNCTION_NAME;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
     }
 }
 
 void Parse::p_function_name(ParseContext& cx) {
-    if ((cx.next >= '0' && cx.next <= '9') || (cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
-        // Continue function name.
-        cx.token.push_back(cx.next);
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
+    if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
         // End function name.
         if (cx.token == "true" || cx.token == "false" || cx.token == "null") {
             // Error.
@@ -253,13 +250,9 @@ void Parse::p_function_name(ParseContext& cx) {
 
         Value::ValueId return_type_id = Parse::call_function(cx);
         cx.state = (return_type_id == Value::T_ERROR ? ParseContext::EXIT : ParseContext::DEFAULT);
-    } else if (cx.next == EOF) {
-        // End of file.
-        Parse::call_function(cx);
-        cx.state = ParseContext::EXIT;
     } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
+        // Continue function name.
+        cx.token.push_back(cx.next);
     }
 }
 
