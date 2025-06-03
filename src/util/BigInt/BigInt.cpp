@@ -117,64 +117,6 @@ BigInt& BigInt::mod_nonzero(const BigInt& right) {
     return *this;
 }
 
-BigInt& BigInt::round_with(const Digit d, const RoundType rt) {
-    return round_with(BigInt(d), rt);
-}
-
-/*
-    before  trunc   adj1    adj2    after   
-    19/6    3       0       0       3
-    18/6    3       0       0       3
-    17/6    2       1       0       3
-    16/6    2       1       0       3
-    15/6    2       1       -1      2
-    14/6    2       0       0       2
-    13/6    2       0       0       2
-    12/6    2       0       0       2
-    11/6    1       1       0       2
-    10/6    1       1       0       2
-    9/6     1       1       0       2
-    8/6     1       0       0       1
-    7/6     1       0       0       1
-    6/6     1       0       0       1
-    5/6     0       1       0       1
-    4/6     0       1       0       1
-    3/6     0       1       -1      0
-    2/6     0       0       0       0
-    1/6     0       0       0       0
-    0/6     0       0       0       0
-
-    trunc = LHS / RHS
-    adj1 = LHS * 2 / RHS % 2
-    adj2 = (LHS % (RHS * 2) * 2 == RHS) ? 1 : 0
-*/
-
-BigInt& BigInt::round_with(const BigInt& right, const RoundType rt) {
-    // If left is 0 or right is 1, return left.
-    if (len == 0 || right.comp(1) == EQUAL) {
-        return *this;
-    }
-
-    BigInt remainder (0);
-    for (long i = len - 1; i >= 0; i--) {
-        remainder.unshift(digits[i]);
-        Digit count = 0;
-        while (remainder.comp(right) != LESS) {
-            if (remainder.len == 1 && right.len == 1) {
-                count += (remainder.digits[0] / right.digits[0]);
-                break;
-            }
-
-            remainder.sub_ordered(right);
-            count++;
-        }
-        digits[i] = count;
-    }
-
-    set_properties();
-    return *this;
-}
-
 void BigInt::unshift(const Digit d) {
     digits.insert(digits.begin(), d);
     set_properties();

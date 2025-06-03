@@ -14,12 +14,6 @@ class BigInt {
         EQUAL = 0,
     };
 
-    enum RoundType {
-        FLOOR,
-        CEILING,
-        CLOSEST_EVEN,
-    };
-
     long len;
     bool is_one;
     double as_double;
@@ -35,8 +29,6 @@ class BigInt {
     BigInt& mul(const BigInt&);
     BigInt& mod_nonzero(const Digit);
     BigInt& mod_nonzero(const BigInt&);
-    BigInt& round_with(const Digit, const RoundType);
-    BigInt& round_with(const BigInt&, const RoundType);
 
     private:
 
