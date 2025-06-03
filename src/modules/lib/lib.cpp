@@ -2,8 +2,6 @@
 
 Lib::MapType Lib::getFunctionMap() {
     return {
-        { "neg", Lib::f_neg },
-        { "abs", Lib::f_abs },
         { "+", Lib::f_add },
         { "-", Lib::f_sub },
         { "*", Lib::f_mul },
@@ -16,6 +14,8 @@ Lib::MapType Lib::getFunctionMap() {
         { ">=", Lib::f_gteq },
         { "==", Lib::f_eq },
         { "!=", Lib::f_neq },
+        { "neg", Lib::f_neg },
+        { "abs", Lib::f_abs },
         { "not", Lib::f_not },
         { "and", Lib::f_and },
         { "or", Lib::f_or },
@@ -29,32 +29,6 @@ Lib::MapType Lib::getFunctionMap() {
 
 template <typename T> T Lib::cast(Value::Ptr value) {
     return *dynamic_cast<const T* const>(value.get());
-}
-
-Value::Ptr Lib::f_neg(const ParseContext::ValueList& value_list) {
-    if (value_list.size() != 1) {
-        return Error::from_string("Invalid argument count for function \"neg\"");
-    } else if (value_list[0]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"neg\"");
-    }
-
-    const Num num1 = Lib::cast<Num>(value_list[0]);
-
-    const Num result (num1.sign * -1, num1.numerator, num1.denominator);
-    return std::make_shared<const Num>(result);
-}
-
-Value::Ptr Lib::f_abs(const ParseContext::ValueList& value_list) {
-    if (value_list.size() != 1) {
-        return Error::from_string("Invalid argument count for function \"abs\"");
-    } else if (value_list[0]->type_id != Value::T_NUM) {
-        return Error::from_string("Invalid argument type(s) for function \"abs\"");
-    }
-
-    const Num num1 = Lib::cast<Num>(value_list[0]);
-
-    const Num result ((num1.sign ? 1 : 0), num1.numerator, num1.denominator);
-    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::f_add(const ParseContext::ValueList& value_list) {
@@ -235,6 +209,32 @@ Value::Ptr Lib::f_neq(const ParseContext::ValueList& value_list) {
 
     const Bool result (num1.comp(num2) != BigInt::EQUAL);
     return std::make_shared<const Bool>(result);
+}
+
+Value::Ptr Lib::f_neg(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"neg\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"neg\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    const Num result (num1.sign * -1, num1.numerator, num1.denominator);
+    return std::make_shared<const Num>(result);
+}
+
+Value::Ptr Lib::f_abs(const ParseContext::ValueList& value_list) {
+    if (value_list.size() != 1) {
+        return Error::from_string("Invalid argument count for function \"abs\"");
+    } else if (value_list[0]->type_id != Value::T_NUM) {
+        return Error::from_string("Invalid argument type(s) for function \"abs\"");
+    }
+
+    const Num num1 = Lib::cast<Num>(value_list[0]);
+
+    const Num result ((num1.sign ? 1 : 0), num1.numerator, num1.denominator);
+    return std::make_shared<const Num>(result);
 }
 
 Value::Ptr Lib::f_not(const ParseContext::ValueList& value_list) {

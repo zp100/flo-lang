@@ -18,6 +18,20 @@ namespace Lib {
     std::map<std::string, FunctionType> getFunctionMap();
     template <typename T> T cast(Value::Ptr);
 
+    // OPERATORS
+    Value::Ptr f_add(const ParseContext::ValueList&);
+    Value::Ptr f_sub(const ParseContext::ValueList&);
+    Value::Ptr f_mul(const ParseContext::ValueList&);
+    Value::Ptr f_div(const ParseContext::ValueList&);
+    Value::Ptr f_mod(const ParseContext::ValueList&);
+    Value::Ptr f_exp(const ParseContext::ValueList&);
+    Value::Ptr f_lt(const ParseContext::ValueList&);
+    Value::Ptr f_lteq(const ParseContext::ValueList&);
+    Value::Ptr f_gt(const ParseContext::ValueList&);
+    Value::Ptr f_gteq(const ParseContext::ValueList&);
+    Value::Ptr f_eq(const ParseContext::ValueList&);
+    Value::Ptr f_neq(const ParseContext::ValueList&);
+
     // TYPE UNARY
     Value::Ptr f_Bool(const ParseContext::ValueList&);
     Value::Ptr f_Num(const ParseContext::ValueList&);
@@ -36,12 +50,6 @@ namespace Lib {
     Value::Ptr f_round(const ParseContext::ValueList&);
 
     // MATH BINARY
-    Value::Ptr f_add(const ParseContext::ValueList&);
-    Value::Ptr f_sub(const ParseContext::ValueList&);
-    Value::Ptr f_mul(const ParseContext::ValueList&);
-    Value::Ptr f_div(const ParseContext::ValueList&);
-    Value::Ptr f_mod(const ParseContext::ValueList&);
-    Value::Ptr f_exp(const ParseContext::ValueList&);
     Value::Ptr f_divmod(const ParseContext::ValueList&);
 
     // MATH GROUP (0+)
@@ -54,12 +62,6 @@ namespace Lib {
     Value::Ptr f_avg(const ParseContext::ValueList&);
 
     // COMPARISON BINARY
-    Value::Ptr f_lt(const ParseContext::ValueList&);
-    Value::Ptr f_lteq(const ParseContext::ValueList&);
-    Value::Ptr f_gt(const ParseContext::ValueList&);
-    Value::Ptr f_gteq(const ParseContext::ValueList&);
-    Value::Ptr f_eq(const ParseContext::ValueList&);
-    Value::Ptr f_neq(const ParseContext::ValueList&);
     Value::Ptr f_in(const ParseContext::ValueList&);
     // isinstance or instanceof?
 
