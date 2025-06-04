@@ -155,8 +155,7 @@ bool Parse::is_word_char(const char c, const bool is_first) {
 
 bool Parse::is_number_char(const char c, const bool is_first) {
     return (
-        (!is_first && c == '0')
-        || (c >= '1' && c <= '9')
+        (c >= '0' && c <= '9')
         || (!is_first && c == '_')
         || (!is_first && c == 'e')
         || (!is_first && c == 'E')
