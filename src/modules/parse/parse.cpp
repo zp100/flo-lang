@@ -19,28 +19,8 @@ std::vector<Value::Ptr> Parse::parse(std::ifstream& source_file) {
                 p_word(cx);
             break;
 
-            case ParseContext::NUMBER_SIGNED:
-                p_number_signed(cx);
-            break;
-
             case ParseContext::NUMBER:
                 p_number(cx);
-            break;
-
-            case ParseContext::NUMBER_DECIMALS:
-                p_number_decimals(cx);
-            break;
-
-            case ParseContext::NUMBER_SCIENTIFIC_START:
-                p_number_scientific_start(cx);
-            break;
-
-            case ParseContext::NUMBER_SCIENTIFIC_SIGNED:
-                p_number_scientific_signed(cx);
-            break;
-
-            case ParseContext::NUMBER_SCIENTIFIC:
-                p_number_scientific(cx);
             break;
 
             default: ; // NOOP
@@ -58,18 +38,10 @@ void Parse::p_default(ParseContext& cx) {
         // Start word.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::WORD;
-    } else if (cx.next == '-') {
-        // Start number.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_SIGNED;
-    } else if (cx.next >= '0' && cx.next <= '9') {
+    } else if (is_number_char(cx.next, true)) {
         // Start number.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER;
-    } else if (cx.next == '.') {
-        // Start number.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_DECIMALS;
     } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
         // Whitespace or separator.
         // NOOP
@@ -109,95 +81,8 @@ void Parse::p_word(ParseContext& cx) {
     }
 }
 
-void Parse::p_number_signed(ParseContext& cx) {
-    if (cx.next >= '0' && cx.next <= '9') {
-        // Continue number.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER;
-    } else if (cx.next == '.') {
-        // Switch to decimal places.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_DECIMALS;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    }
-}
-
 void Parse::p_number(ParseContext& cx) {
-    if ((cx.next >= '0' && cx.next <= '9') || cx.next == '_') {
-        // Continue number.
-        cx.token.push_back(cx.next);
-    } else if (cx.next == '.') {
-        // Switch to decimal places.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_DECIMALS;
-    } else if (cx.next == 'E' || cx.next == 'e') {
-        // Switch to scientific notation exponent.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
-    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
-        // End number.
-        handle_number(cx);
-    } else if (cx.next == EOF) {
-        // End of file.
-        handle_number(cx);
-        cx.state = ParseContext::EXIT;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    }
-}
-
-void Parse::p_number_decimals(ParseContext& cx) {
-    if (cx.next >= '0' && cx.next <= '9') {
-        // Continue number.
-        cx.token.push_back(cx.next);
-    } else if (cx.next == 'E' || cx.next == 'e') {
-        // Switch to scientific notation exponent.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
-    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
-        // End number.
-        handle_number(cx);
-    } else if (cx.next == EOF) {
-        // End of file.
-        handle_number(cx);
-        cx.state = ParseContext::EXIT;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    }
-}
-
-void Parse::p_number_scientific_start(ParseContext& cx) {
-    if (cx.next == '-') {
-        // Continue number.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_SCIENTIFIC_SIGNED;
-    } else if (cx.next >= '0' && cx.next <= '9') {
-        // Continue number.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_SCIENTIFIC;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    }
-}
-
-void Parse::p_number_scientific_signed(ParseContext& cx) {
-    if (cx.next >= '0' && cx.next <= '9') {
-        // Continue number.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::NUMBER_SCIENTIFIC;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    }
-}
-
-void Parse::p_number_scientific(ParseContext& cx) {
-    if (cx.next >= '0' && cx.next <= '9') {
+    if (is_number_char(cx.next, false)) {
         // Continue number.
         cx.token.push_back(cx.next);
     } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
@@ -265,5 +150,16 @@ bool Parse::is_word_char(const char c, const bool is_first) {
         || c == '_'
         || c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '~'
         || c == '<' || c == '>' || c == '=' || c == '!' || c == '@'
+    );
+}
+
+bool Parse::is_number_char(const char c, const bool is_first) {
+    return (
+        (!is_first && c == '0')
+        || (c >= '1' && c <= '9')
+        || (!is_first && c == '_')
+        || (!is_first && c == 'e')
+        || (!is_first && c == 'E')
+        || c == '+' || c == '-' || c == '.'
     );
 }

@@ -12,14 +12,7 @@ class ParseContext {
         DEFAULT,
         COMMENT,
         WORD,
-
-        NUMBER_SIGNED,
         NUMBER,
-        NUMBER_DECIMALS,
-        NUMBER_SCIENTIFIC_START,
-        NUMBER_SCIENTIFIC_SIGNED,
-        NUMBER_SCIENTIFIC,
-
         EXIT,
     };
 
