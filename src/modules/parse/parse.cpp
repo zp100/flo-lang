@@ -8,47 +8,39 @@ std::vector<Value::Ptr> Parse::parse(std::ifstream& source_file) {
 
         switch (cx.state) {
             case ParseContext::DEFAULT:
-                Parse::p_default(cx);
+                p_default(cx);
             break;
 
             case ParseContext::COMMENT:
-                Parse::p_comment(cx);
-            break;
-
-            case ParseContext::NUMBER_SIGNED:
-                Parse::p_number_signed(cx);
-            break;
-
-            case ParseContext::NUMBER:
-                Parse::p_number(cx);
-            break;
-
-            case ParseContext::NUMBER_DECIMALS:
-                Parse::p_number_decimals(cx);
-            break;
-
-            case ParseContext::NUMBER_SCIENTIFIC_START:
-                Parse::p_number_scientific_start(cx);
-            break;
-
-            case ParseContext::NUMBER_SCIENTIFIC_SIGNED:
-                Parse::p_number_scientific_signed(cx);
-            break;
-
-            case ParseContext::NUMBER_SCIENTIFIC:
-                Parse::p_number_scientific(cx);
+                p_comment(cx);
             break;
 
             case ParseContext::WORD:
-                Parse::p_word(cx);
+                p_word(cx);
             break;
 
-            case ParseContext::CALL_START:
-                Parse::p_call_start(cx);
+            case ParseContext::NUMBER_SIGNED:
+                p_number_signed(cx);
             break;
 
-            case ParseContext::FUNCTION_NAME:
-                Parse::p_function_name(cx);
+            case ParseContext::NUMBER:
+                p_number(cx);
+            break;
+
+            case ParseContext::NUMBER_DECIMALS:
+                p_number_decimals(cx);
+            break;
+
+            case ParseContext::NUMBER_SCIENTIFIC_START:
+                p_number_scientific_start(cx);
+            break;
+
+            case ParseContext::NUMBER_SCIENTIFIC_SIGNED:
+                p_number_scientific_signed(cx);
+            break;
+
+            case ParseContext::NUMBER_SCIENTIFIC:
+                p_number_scientific(cx);
             break;
 
             default: ; // NOOP
@@ -62,6 +54,10 @@ void Parse::p_default(ParseContext& cx) {
     if (cx.next == '#') {
         // Start comment.
         cx.state = ParseContext::COMMENT;
+    } else if (is_word_char(cx.next, true)) {
+        // Start word.
+        cx.token.push_back(cx.next);
+        cx.state = ParseContext::WORD;
     } else if (cx.next == '-') {
         // Start number.
         cx.token.push_back(cx.next);
@@ -74,18 +70,11 @@ void Parse::p_default(ParseContext& cx) {
         // Start number.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_DECIMALS;
-    } else if ((cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
-        // Start word.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::WORD;
-    } else if (cx.next == ':') {
-        // Call function.
-        cx.state = ParseContext::CALL_START;
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';') {
-        // Whitespace.
+    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
+        // Whitespace or separator.
         // NOOP
     } else {
-        // Error or end of file.
+        // End of file or error.
         cx.state = ParseContext::EXIT;
     }
 }
@@ -100,6 +89,23 @@ void Parse::p_comment(ParseContext& cx) {
     } else {
         // Continue comment.
         // NOOP
+    }
+}
+
+void Parse::p_word(ParseContext& cx) {
+    if (is_word_char(cx.next, false)) {
+        // Continue word.
+        cx.token.push_back(cx.next);
+    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
+        // End word.
+        handle_word(cx);
+    } else if (cx.next == EOF) {
+        // End of file.
+        handle_word(cx);
+        cx.state = ParseContext::EXIT;
+    } else {
+        // Error.
+        cx.state = ParseContext::EXIT;
     }
 }
 
@@ -130,12 +136,13 @@ void Parse::p_number(ParseContext& cx) {
         // Switch to scientific notation exponent.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
+    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
         // End number.
-        Value::Ptr value = Num::from_string(cx.token);
-        cx.value_list.push_back(value);
-        cx.token.clear();
-        cx.state = ParseContext::DEFAULT;
+        handle_number(cx);
+    } else if (cx.next == EOF) {
+        // End of file.
+        handle_number(cx);
+        cx.state = ParseContext::EXIT;
     } else {
         // Error.
         cx.state = ParseContext::EXIT;
@@ -150,12 +157,13 @@ void Parse::p_number_decimals(ParseContext& cx) {
         // Switch to scientific notation exponent.
         cx.token.push_back(cx.next);
         cx.state = ParseContext::NUMBER_SCIENTIFIC_START;
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
+    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
         // End number.
-        Value::Ptr value = Num::from_string(cx.token);
-        cx.value_list.push_back(value);
-        cx.token.clear();
-        cx.state = ParseContext::DEFAULT;
+        handle_number(cx);
+    } else if (cx.next == EOF) {
+        // End of file.
+        handle_number(cx);
+        cx.state = ParseContext::EXIT;
     } else {
         // Error.
         cx.state = ParseContext::EXIT;
@@ -192,83 +200,70 @@ void Parse::p_number_scientific(ParseContext& cx) {
     if (cx.next >= '0' && cx.next <= '9') {
         // Continue number.
         cx.token.push_back(cx.next);
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
+    } else if (is_space_char(cx.next) || is_separator_char(cx.next)) {
         // End number.
-        Value::Ptr value = Num::from_string(cx.token);
-        cx.value_list.push_back(value);
-        cx.token.clear();
-        cx.state = ParseContext::DEFAULT;
+        handle_number(cx);
+    } else if (cx.next == EOF) {
+        // End of file.
+        handle_number(cx);
+        cx.state = ParseContext::EXIT;
     } else {
         // Error.
         cx.state = ParseContext::EXIT;
     }
 }
 
-void Parse::p_word(ParseContext& cx) {
-    if ((cx.next >= '0' && cx.next <= '9') || (cx.next >= 'A' && cx.next <= 'Z') || cx.next == '_' || (cx.next >= 'a' && cx.next <= 'z')) {
-        // Continue word.
-        cx.token.push_back(cx.next);
-    } else if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
-        // End word.
-        Value::Ptr value;
-        if (cx.token == "true" || cx.token == "false") {
-            value = Bool::from_string(cx.token);
-        } else if (cx.token == "null") {
-            value = Null::from_string(cx.token);
-        } else {
-            value = Identifier::from_string(cx.token);
-        }
-
-        cx.value_list.push_back(value);
-        cx.token.clear();
-        cx.state = ParseContext::DEFAULT;
-    } else {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    }
-}
-
-void Parse::p_call_start(ParseContext& cx) {
-    if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
-        // Error.
-        cx.state = ParseContext::EXIT;
-    } else {
-        // Start word.
-        cx.token.push_back(cx.next);
-        cx.state = ParseContext::FUNCTION_NAME;
-    }
-}
-
-void Parse::p_function_name(ParseContext& cx) {
-    if (cx.next == '\t' || cx.next == '\n' || cx.next == '\v' || cx.next == '\f' || cx.next == '\r' || cx.next == ' ' || cx.next == ';' || cx.next == EOF) {
-        // End function name.
-        if (cx.token == "true" || cx.token == "false" || cx.token == "null") {
-            // Error.
-            cx.state = ParseContext::EXIT;
-            return;
-        }
-
-        Value::ValueId return_type_id = Parse::call_function(cx);
-        cx.state = (return_type_id == Value::T_ERROR ? ParseContext::EXIT : ParseContext::DEFAULT);
-    } else {
-        // Continue function name.
-        cx.token.push_back(cx.next);
-    }
-}
-
-Value::ValueId Parse::call_function(ParseContext& cx) {
-    Lib::MapType function_map = Lib::getFunctionMap();
-
+void Parse::handle_word(ParseContext& cx) {
     Value::Ptr value;
-    if (function_map.count(cx.token) > 0) {
-        Lib::FunctionType _callee_ = function_map[cx.token];
-        value = _callee_(cx.value_list);
+    if (cx.token == "true" || cx.token == "false") {
+        value = Bool::from_string(cx.token);
+    } else if (cx.token == "null") {
+        value = Null::from_string(cx.token);
     } else {
-        value = Error::from_string("Invalid function \"" + cx.token + "\" called");
+        Lib::MapType function_map = Lib::getFunctionMap();
+
+        if (function_map.count(cx.token) > 0) {
+            Lib::FunctionType _callee_ = function_map[cx.token];
+            value = _callee_(cx.value_list);
+        } else {
+            value = Error::from_string("Invalid function \"" + cx.token + "\" called");
+        }
+
+        cx.value_list.clear();
     }
 
-    cx.value_list.clear();
     cx.value_list.push_back(value);
     cx.token.clear();
-    return value->type_id;
+    cx.state = (value->type_id == Value::T_ERROR ? ParseContext::EXIT : ParseContext::DEFAULT);
+}
+
+void Parse::handle_number(ParseContext& cx) {
+    Value::Ptr value = Num::from_string(cx.token);
+
+    cx.value_list.push_back(value);
+    cx.token.clear();
+    cx.state = ParseContext::DEFAULT;
+}
+
+bool Parse::is_space_char(const char c) {
+    return (
+        c == ' ' || c == '\f' || c == '\r' || c == '\t' || c == '\v'
+    );
+}
+
+bool Parse::is_separator_char(const char c) {
+    return (
+        c == ' ' || c == '\n'
+    );
+}
+
+bool Parse::is_word_char(const char c, const bool is_first) {
+    return (
+        (c >= 'A' && c <= 'Z')
+        || (c >= 'a' && c <= 'z')
+        || (!is_first && c >= '0' && c <= '9')
+        || c == '_'
+        || c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '~'
+        || c == '<' || c == '>' || c == '=' || c == '!' || c == '@'
+    );
 }

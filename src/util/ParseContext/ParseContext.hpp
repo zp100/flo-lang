@@ -11,6 +11,7 @@ class ParseContext {
     enum ParseState {
         DEFAULT,
         COMMENT,
+        WORD,
 
         NUMBER_SIGNED,
         NUMBER,
@@ -19,9 +20,6 @@ class ParseContext {
         NUMBER_SCIENTIFIC_SIGNED,
         NUMBER_SCIENTIFIC,
 
-        WORD,
-        CALL_START,
-        FUNCTION_NAME,
         EXIT,
     };
 

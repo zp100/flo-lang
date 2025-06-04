@@ -12,14 +12,17 @@ namespace Parse {
     std::vector<Value::Ptr> parse(std::ifstream& source_file);
     void p_default(ParseContext& cx);
     void p_comment(ParseContext& cx);
+    void p_word(ParseContext& cx);
     void p_number_signed(ParseContext& cx);
     void p_number(ParseContext& cx);
     void p_number_decimals(ParseContext& cx);
     void p_number_scientific_start(ParseContext& cx);
     void p_number_scientific_signed(ParseContext& cx);
     void p_number_scientific(ParseContext& cx);
-    void p_word(ParseContext& cx);
-    void p_call_start(ParseContext& cx);
-    void p_function_name(ParseContext& cx);
-    Value::ValueId call_function(ParseContext& cx);
+
+    void handle_word(ParseContext& cx);
+    void handle_number(ParseContext& cx);
+    bool is_space_char(const char);
+    bool is_separator_char(const char);
+    bool is_word_char(const char, const bool);
 }
