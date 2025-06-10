@@ -138,7 +138,7 @@ bool Parse::is_space_char(const char c) {
 
 bool Parse::is_separator_char(const char c) {
     return (
-        c == ' ' || c == '\n'
+        c == ';' || c == '\n'
     );
 }
 
@@ -147,7 +147,7 @@ bool Parse::is_word_char(const char c, const bool is_first) {
         (c >= 'A' && c <= 'Z')
         || (c >= 'a' && c <= 'z')
         || (!is_first && c >= '0' && c <= '9')
-        || c == '_'
+        || c == '_' || c == '$'
         || c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^' || c == '~'
         || c == '<' || c == '>' || c == '=' || c == '!' || c == '@'
     );
