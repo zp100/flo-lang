@@ -1,7 +1,6 @@
 #pragma once
 #include "memory"
 #include "string"
-#include "../../types/Value/Value.hpp"
 
 class Token {
     public:
