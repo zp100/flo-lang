@@ -1,8 +1,8 @@
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include "types/Value/Value.hpp"
-#include "modules/parse/parse.hpp"
+#include <memory>
+#include "compiler/Scanner/Scanner.hpp"
+#include "compiler/Token/Token.hpp"
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -10,19 +10,19 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    std::ifstream source_file;
-    source_file.open(argv[1], std::ios::in);
-
-    if (!source_file.is_open()) {
+    Scanner::FilePtr source_file = std::make_shared<std::ifstream>(argv[1], std::ios::in);
+    if (!source_file->is_open()) {
         std::cerr << "Error: Failed to open file " << argv[1] << std::endl;
         return -1;
     }
 
-    ParseContext::ValueList value_list = Parse::parse(source_file);
-    source_file.close();
-
-    std::cout << "---" << std::endl;
-    for (std::size_t i = 0; i < value_list.size(); i++) {
-        std::cout << "[" << i << "] " << value_list[i]->to_string() << std::endl;
-    };
+    Scanner scanner (source_file);
+    while (true) {
+        const Token::Ptr token = scanner.get_next_token();
+        if (token->id != Token::EMPTY) {
+            std::cout << "[" << token->id << "] " << (token->raw_text == "\n" ? "\\n" : token->raw_text) << std::endl;
+        } else {
+            break;
+        }
+    }
 }
