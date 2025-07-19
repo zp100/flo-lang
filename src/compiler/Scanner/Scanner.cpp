@@ -1,6 +1,6 @@
 #include "Scanner.hpp"
 
-Scanner::Scanner(FilePtr sf) : source_file(sf), is_empty(false) {
+Scanner::Scanner(FilePtr sf) : source_file(sf), is_end(false) {
     prep_next_char();
 }
 
@@ -9,7 +9,7 @@ Token::Ptr Scanner::get_next_token() {
         prep_next_char();
     }
 
-    if (is_empty) {
+    if (is_end) {
         return std::make_shared<Token>(Token::EMPTY, "");
     }
 
@@ -60,7 +60,7 @@ Token::Ptr Scanner::get_next_token() {
 void Scanner::prep_next_char() {
     next_char = source_file->get();
     if (next_char == EOF) {
-        is_empty = true;
+        is_end = true;
     }
 }
 

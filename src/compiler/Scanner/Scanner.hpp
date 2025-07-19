@@ -15,7 +15,7 @@ class Scanner {
 
     FilePtr source_file;
     char next_char;
-    bool is_empty;
+    bool is_end;
 
     void prep_next_char();
     bool is_space_char(const char) const;
