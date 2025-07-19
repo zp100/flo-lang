@@ -26,8 +26,8 @@ Token::Ptr Scanner::get_next_token() {
             raw_text += next_char;
             prep_next_char();
         }
-        
-        id = Token::IDENTIFIER;
+
+        id = Token::WORD;
     } else if (is_number_char(next_char, true)) {
         prep_next_char();
         while (is_number_char(next_char, false)) {
@@ -88,7 +88,9 @@ bool Scanner::is_identifier_char(const char c, const bool is_first) const {
 bool Scanner::is_number_char(const char c, const bool is_first) const {
     return (
         (c >= '0' && c <= '9')
-        || c == '+' || c == '-' || c == '.'
+        || c == '.'
+        || (!is_first && c == '+')
+        || (!is_first && c == '-')
         || (!is_first && c == '_')
         || (!is_first && c == 'e')
         || (!is_first && c == 'E')
@@ -99,10 +101,10 @@ bool Scanner::is_operator_char(const char c, const int i) const {
     switch (i) {
         case 0: return (
             c == '+' || c == '-' || c == '*' || c == '/' || c == '%'
-            || c == ':' || c == ','
+            || c == ':'
             || is_operator_continuation_char(c)
         );
-        
+
         case 1: return (
             c == '='
         );

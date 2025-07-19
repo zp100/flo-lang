@@ -9,7 +9,7 @@ class Token {
 
     enum TokenId {
         SEPARATOR,
-        IDENTIFIER,
+        WORD,
         NUMBER,
         OPERATOR,
         ERROR,
