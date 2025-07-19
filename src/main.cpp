@@ -1,6 +1,9 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <vector>
+#include "compiler/AstNode/AstNode.hpp"
+#include "compiler/Parser/Parser.hpp"
 #include "compiler/Scanner/Scanner.hpp"
 #include "compiler/Token/Token.hpp"
 
@@ -17,14 +20,7 @@ int main(int argc, char* argv[]) {
     }
 
     Scanner scanner (source_file);
-
-    // DEBUG
-    while (true) {
-        const Token::Ptr token = scanner.get_next_token();
-        if (token->id != Token::EMPTY) {
-            std::cout << "[" << token->id << "] " << (token->raw_text == "\n" ? "\\n" : token->raw_text) << std::endl;
-        } else {
-            break;
-        }
-    }
+    Parser parser (scanner);
+    std::vector<AstNode> abstract_syntax_tree = parser.generate_ast();
+    // TODO
 }
