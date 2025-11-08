@@ -2,14 +2,15 @@
 #include <vector>
 #include "../AstNode/AstNode.hpp"
 #include "../Scanner/Scanner.hpp"
+#include "../Token/Token.hpp"
 
 class Parser {
     public:
 
-    Parser(const Scanner);
-    std::vector<AstNode> generate_ast() const;
+    Parser(Scanner);
+    std::vector<AstNode::Ptr> generate_ast();
 
     private:
 
-    const Scanner scanner;
+    Scanner scanner;
 };
